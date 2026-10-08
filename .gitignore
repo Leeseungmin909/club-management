@@ -1,0 +1,28 @@
+# 비밀 정보 (절대 커밋 금지)
+config.properties
+*.pem
+*.ppk
+*.key
+.env
+.env.*
+**/credentials*
+.aws/
+
+# 업로드 파일
+uploads/
+
+# 빌드 결과물
+.gradle/
+build/
+out/
+bin/
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+.DS_Store
+Thumbs.db
