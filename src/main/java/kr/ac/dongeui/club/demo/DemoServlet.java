@@ -1,4 +1,4 @@
-package club;
+package kr.ac.dongeui.club.demo;
 
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;

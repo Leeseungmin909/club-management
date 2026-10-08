@@ -1,4 +1,4 @@
-<%@ page import="club.Config" %>
+<%@ page import="kr.ac.dongeui.club.global.config.Config" %>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${empty title ? '모아' : title.concat(' · 모아')}</title>

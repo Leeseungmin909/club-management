@@ -1,4 +1,4 @@
-package club;
+package kr.ac.dongeui.club.global.config;
 
 import java.io.IOException;
 import java.io.Reader;
