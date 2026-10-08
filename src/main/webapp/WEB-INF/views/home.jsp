@@ -1,4 +1,5 @@
 <%-- 홈: 다가오는 일정, 최근 공지, 바로가기 --%>
+<c:set var="pageCss" value="home" />
 <c:set var="nav" value="home" />
 <%@ include file="/WEB-INF/views/layout/top.jspf" %>
 

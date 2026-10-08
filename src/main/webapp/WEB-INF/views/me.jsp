@@ -1,4 +1,5 @@
 <%-- 내 정보 (SFR-11) + 프로필 이미지 변경 (SFR-12) + 동아리 탈퇴 (SFR-09) --%>
+<c:set var="pageCss" value="member" />
 <c:set var="nav" value="me" />
 <c:set var="title" value="내 정보" />
 <c:set var="panelClass" value="narrow" />

@@ -1,4 +1,5 @@
 <%-- 일정 등록 · 수정 (SFR-17, 19) + 장소 지도 검색 (SFR-23) --%>
+<c:set var="pageCss" value="schedule" />
 <c:set var="nav" value="${empty s ? 'scheduleWrite' : 'schedules'}" />
 <c:set var="title" value="${empty s ? '일정 등록' : '일정 수정'}" />
 <c:set var="back" value="${empty s ? ctx += '/schedules' : ctx += '/schedules/view?id=' += s.id}" />

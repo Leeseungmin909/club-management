@@ -1,4 +1,5 @@
 <%-- 일정 목록 (SFR-18): 이번 주 + 다가오는 일정 + 지난 일정(15개씩) --%>
+<c:set var="pageCss" value="schedule" />
 <c:set var="nav" value="schedules" />
 <c:set var="title" value="일정" />
 <c:if test="${me.role == 'ADMIN'}">

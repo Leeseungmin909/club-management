@@ -4,6 +4,7 @@
 <html lang="ko">
 <head>
 <c:set var="title" value="${code == 403 ? '접근 권한 없음' : code == 404 ? '페이지 없음' : '오류'}" />
+<c:set var="pageCss" value="auth" />
 <%@ include file="/WEB-INF/views/layout/head.jspf" %>
 </head>
 <body class="auth">

@@ -1,4 +1,5 @@
 <%-- 회원 관리 (SFR-08 추방, SFR-10 관리자 지정·해제) --%>
+<c:set var="pageCss" value="admin" />
 <c:set var="nav" value="manage" />
 <c:set var="title" value="회원 관리" />
 <c:set var="back" value="${ctx}/admin/dashboard" />

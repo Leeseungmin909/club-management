@@ -3,6 +3,7 @@
 <html lang="ko">
 <head>
 <c:set var="title" value="승인 대기" />
+<c:set var="pageCss" value="auth" />
 <%@ include file="/WEB-INF/views/layout/head.jspf" %>
 </head>
 <body class="auth">

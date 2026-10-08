@@ -6,9 +6,13 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <%-- 배포할 때마다 바뀌는 값을 붙여 브라우저가 예전 CSS · JS 를 캐시로 쓰지 않게 한다 --%>
 <c:if test="${empty applicationScope.assetVersion}"><c:set var="assetVersion" scope="application" value="<%= System.currentTimeMillis() %>" /></c:if>
-<link rel="stylesheet" href="${ctx}/css/app.css?v=${assetVersion}">
+<%-- 모든 화면: base · layout. 화면별: 각 JSP 맨 위의 pageCss / pageJs 값으로 pages/ 파일을 추가로 불러온다 --%>
+<link rel="stylesheet" href="${ctx}/css/base.css?v=${assetVersion}">
+<link rel="stylesheet" href="${ctx}/css/layout.css?v=${assetVersion}">
+<c:if test="${not empty pageCss}"><link rel="stylesheet" href="${ctx}/css/pages/${pageCss}.css?v=${assetVersion}"></c:if>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 <script src="${ctx}/js/app.js?v=${assetVersion}" defer></script>
+<c:if test="${not empty pageJs}"><script src="${ctx}/js/pages/${pageJs}.js?v=${assetVersion}" defer></script></c:if>
 <c:set var="gaId" value="${Config.get('ga.measurement.id')}" />
 <c:if test="${not empty gaId}">
 <script async src="https://www.googletagmanager.com/gtag/js?id=${gaId}"></script>

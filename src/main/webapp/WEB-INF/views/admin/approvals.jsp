@@ -1,4 +1,5 @@
 <%-- 가입 승인 · 거절 (SFR-06) --%>
+<c:set var="pageCss" value="admin" />
 <c:set var="nav" value="approvals" />
 <c:set var="title" value="가입 승인" />
 <c:set var="back" value="${ctx}/admin/dashboard" />

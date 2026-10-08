@@ -1,4 +1,5 @@
 <%-- 일정 상세 (SFR-18, 19) + 출석 체크·변경 (SFR-20, 21) + 출석 현황 (SFR-22) + 지도 (SFR-24) --%>
+<c:set var="pageCss" value="schedule" />
 <c:set var="nav" value="schedules" />
 <c:set var="title" value="일정" />
 <c:set var="back" value="${ctx}/schedules" />

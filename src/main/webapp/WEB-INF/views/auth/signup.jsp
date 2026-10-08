@@ -3,6 +3,7 @@
 <html lang="ko">
 <head>
 <c:set var="title" value="가입 신청" />
+<c:set var="pageCss" value="auth" />
 <%@ include file="/WEB-INF/views/layout/head.jspf" %>
 </head>
 <body class="auth">

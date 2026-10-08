@@ -1,4 +1,6 @@
 <%-- 동아리 단체 채팅 (SFR-29): 글자 · 이미지 · 동영상. 새 메시지는 SSE로 받는다 (기능 구현 시 연결) --%>
+<c:set var="pageCss" value="chat" />
+<c:set var="pageJs" value="chat" />
 <c:set var="nav" value="chat" />
 <c:set var="title" value="${fn:escapeXml(club.name)} 단체채팅" />
 <c:set var="panelClass" value="chat" />
@@ -36,15 +38,10 @@
 <form class="chat-input" id="chatForm" method="post" action="${ctx}/chat" enctype="multipart/form-data">
     <label class="round" title="이미지 · 동영상 보내기" aria-label="이미지 · 동영상 보내기">
         <i data-lucide="plus"></i>
-        <input type="file" name="file" accept=".jpg,.jpeg,.png,.gif,.mp4,.webm" hidden onchange="this.form.submit()">
+        <input type="file" name="file" accept=".jpg,.jpeg,.png,.gif,.mp4,.webm" hidden>
     </label>
     <input type="text" name="content" maxlength="1000" placeholder="메시지를 입력하세요" autocomplete="off" aria-label="메시지">
     <button class="round send" type="submit" aria-label="보내기"><i data-lucide="send"></i></button>
 </form>
-
-<script>
-const log = document.getElementById('chatLog');
-log.scrollTop = log.scrollHeight;
-</script>
 
 <%@ include file="/WEB-INF/views/layout/bottom.jspf" %>

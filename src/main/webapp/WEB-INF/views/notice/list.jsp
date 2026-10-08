@@ -1,4 +1,5 @@
 <%-- 공지 목록 · 검색 (SFR-14, 16) --%>
+<c:set var="pageCss" value="notice" />
 <c:set var="nav" value="notices" />
 <c:set var="title" value="공지사항" />
 <%@ include file="/WEB-INF/views/layout/top.jspf" %>

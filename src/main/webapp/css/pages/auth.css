@@ -1,0 +1,37 @@
+/* 로그인 · 가입 신청 · 승인 대기 · 에러 화면 */
+.btn-naver { width: 100%; height: 52px; border: 0; border-radius: 14px; background: var(--naver); color: #fff; font-size: 16px; font-weight: 700; }
+.btn-naver:hover { filter: brightness(.96); }
+.btn-naver b { font-size: 18px; font-weight: 900; margin-right: 6px; }
+
+/* ── 로그인 · 가입 · 안내 화면 ───────────── */
+body.auth {
+  min-height: 100vh;
+  background: radial-gradient(circle at 100% 0, #efeaff 0 210px, transparent 211px),
+              radial-gradient(circle at 0 100%, transparent 0 120px, #f1edff 121px 122px, transparent 123px),
+              linear-gradient(160deg, #fff, #f5f2ff);
+}
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; }
+.auth-wrap { display: grid; place-items: center; min-height: 100vh; padding: 24px 16px; }
+.topbar + .auth-wrap { min-height: calc(100vh - 72px); }
+.auth-box { width: 100%; max-width: 400px; }
+.auth-box.center { text-align: center; }
+.auth-box .logo { width: 52px; height: 52px; border-radius: 15px; box-shadow: 0 10px 24px rgba(108, 78, 227, .3); }
+.auth h1 { margin: 6px 0 14px; font-size: 44px; line-height: 1.2; letter-spacing: -.03em; }
+.auth h1 em { font-style: normal; color: var(--primary); }
+.auth h2 { margin: 14px 0 10px; font-size: 30px; line-height: 1.3; letter-spacing: -.02em; }
+.auth .lead { margin-bottom: 30px; color: var(--text-2); line-height: 1.7; }
+.terms { margin-top: 12px; font-size: 11px; color: var(--muted); text-align: center; }
+.orbit { position: relative; display: grid; place-items: center; width: 104px; height: 104px; margin: 0 auto; border: 1px dashed #cfc5f7; border-radius: 50%; }
+.orbit::before, .orbit::after { content: ""; position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+.orbit::before { top: 6px; left: 22px; } .orbit::after { bottom: 26px; right: -4px; width: 6px; height: 6px; }
+.orbit .icon-tile { width: 58px; height: 58px; border-radius: 18px; }
+.orbit svg.lucide { width: 26px; height: 26px; }
+.kv { margin: 22px 0 16px; padding: 4px 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; text-align: left; }
+.kv > div { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--line); }
+.kv > div:first-child { border-top: 0; }
+.kv span { color: var(--muted); }
+.form-card { padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: #fff; box-shadow: var(--shadow); text-align: left; }
+
+@media (max-width: 860px) {
+  .auth h1 { font-size: 36px; }
+}

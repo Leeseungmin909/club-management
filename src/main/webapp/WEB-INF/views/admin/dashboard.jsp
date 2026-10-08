@@ -1,4 +1,6 @@
 <%-- 관리자 대시보드 (SFR-26): 월별 신규 가입·탈퇴(막대), 총 인원 누계(꺾은선), 전체 회원 수, 평균 출석률 --%>
+<c:set var="pageCss" value="admin" />
+<c:set var="pageJs" value="dashboard" />
 <c:set var="nav" value="dashboard" />
 <%@ include file="/WEB-INF/views/layout/top.jspf" %>
 
@@ -31,7 +33,7 @@
         <div><p class="meta">회원 성장</p><h4>월별 가입·탈퇴 및 총 인원</h4></div>
         <span class="badge">최근 ${fn:length(chart.labels)}개월</span>
     </header>
-    <div class="chart-box"><canvas id="growth" aria-label="월별 가입·탈퇴 및 총 인원 그래프"></canvas></div>
+    <div class="chart-box"><canvas id="growth" data-chart="${fn:escapeXml(chartJson)}" aria-label="월별 가입·탈퇴 및 총 인원 그래프"></canvas></div>
 </div>
 
 <div class="sec-head">
@@ -55,25 +57,7 @@
     </a>
 </div>
 
+<%-- 그래프 라이브러리. 화면 스크립트(pages/dashboard.js)보다 먼저 실행되도록 defer 없이 둔다 --%>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script>
-const chart = ${chartJson};
-new Chart(document.getElementById('growth'), {
-  data: {
-    labels: chart.labels,
-    datasets: [
-      { type: 'line', label: '총 인원', data: chart.total, borderColor: '#6c4ee3', backgroundColor: '#fff',
-        pointBorderWidth: 2, pointRadius: 4, tension: .3, yAxisID: 'y' },
-      { type: 'bar', label: '신규 가입자', data: chart.joined, backgroundColor: '#e4ddfd', borderRadius: 4, barPercentage: .5 },
-      { type: 'bar', label: '탈퇴자', data: chart.left, backgroundColor: '#fbd9da', borderRadius: 4, barPercentage: .5 }
-    ]
-  },
-  options: {
-    maintainAspectRatio: false,
-    plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 10, font: { size: 11 } } } },
-    scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { precision: 0 } } }
-  }
-});
-</script>
 
 <%@ include file="/WEB-INF/views/layout/bottom.jspf" %>
