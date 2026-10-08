@@ -1,0 +1,16 @@
+<%@ page import="club.Config" %>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${empty title ? '모아' : title.concat(' · 모아')}</title>
+<link rel="icon" href="${ctx}/img/logo.svg">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<%-- 배포할 때마다 바뀌는 값을 붙여 브라우저가 예전 CSS · JS 를 캐시로 쓰지 않게 한다 --%>
+<c:if test="${empty applicationScope.assetVersion}"><c:set var="assetVersion" scope="application" value="<%= System.currentTimeMillis() %>" /></c:if>
+<link rel="stylesheet" href="${ctx}/css/app.css?v=${assetVersion}">
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+<script src="${ctx}/js/app.js?v=${assetVersion}" defer></script>
+<c:set var="gaId" value="${Config.get('ga.measurement.id')}" />
+<c:if test="${not empty gaId}">
+<script async src="https://www.googletagmanager.com/gtag/js?id=${gaId}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${gaId}');</script>
+</c:if>

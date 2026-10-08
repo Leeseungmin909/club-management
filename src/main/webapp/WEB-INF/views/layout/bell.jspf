@@ -1,0 +1,18 @@
+<%-- 종 아이콘 + 최근 알림 드롭다운 (SFR-28). 필요한 값: bell(최근 알림), unread(안 읽은 수) --%>
+<details class="bell">
+    <summary class="icon-btn" aria-label="알림">
+        <i data-lucide="bell"></i>
+        <c:if test="${unread > 0}"><span class="dot-badge">${unread}</span></c:if>
+    </summary>
+    <div class="dropdown">
+        <header>
+            <span>알림</span>
+            <form method="post" action="${ctx}/notifications/read-all"><button class="link-btn" type="submit">모두 읽음</button></form>
+        </header>
+        <c:forEach items="${bell}" var="n">
+            <%@ include file="/WEB-INF/views/layout/noti-item.jspf" %>
+        </c:forEach>
+        <c:if test="${empty bell}"><p class="empty small">새 알림이 없어요</p></c:if>
+        <a class="dropdown-foot" href="${ctx}/notifications">전체 보기</a>
+    </div>
+</details>

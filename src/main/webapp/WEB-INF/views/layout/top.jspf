@@ -1,0 +1,71 @@
+<%-- 앱 공통 위쪽: 사이드바 + 본문 패널 머리.
+     페이지에서 미리 정하는 값: nav(현재 메뉴), title(가운데 제목), back(뒤로가기 주소), admin(관리자 배지), panelClass --%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<%@ include file="/WEB-INF/views/layout/head.jspf" %>
+</head>
+<body class="app">
+<aside class="sidebar" id="sidebar">
+    <a class="side-brand" href="${ctx}/">
+        <img class="logo" src="${ctx}/img/logo.svg" alt="">
+        <span><b>모아</b><small>한곳에 모이는 우리</small></span>
+    </a>
+
+    <a class="club-card" href="${ctx}/me">
+        <t:avatar name="${club.name}" src="${club.image_path}" size="md" ring="true" />
+        <span><b class="ellipsis">${fn:escapeXml(club.name)}</b><small>${fn:escapeXml(club.school)}</small></span>
+        <i data-lucide="chevron-right"></i>
+    </a>
+
+    <nav class="side-nav">
+        <p class="nav-label">멤버</p>
+        <a href="${ctx}/" class="${nav == 'home' ? 'on' : ''}"><i data-lucide="house"></i>홈</a>
+        <a href="${ctx}/notices" class="${nav == 'notices' ? 'on' : ''}"><i data-lucide="file-text"></i>공지사항</a>
+        <a href="${ctx}/schedules" class="${nav == 'schedules' ? 'on' : ''}"><i data-lucide="calendar"></i>일정</a>
+        <a href="${ctx}/chat" class="${nav == 'chat' ? 'on' : ''}"><i data-lucide="message-square"></i>단체 채팅</a>
+        <a href="${ctx}/members" class="${nav == 'members' ? 'on' : ''}"><i data-lucide="users"></i>회원 목록</a>
+        <a href="${ctx}/me" class="${nav == 'me' ? 'on' : ''}"><i data-lucide="user"></i>내 정보</a>
+        <c:if test="${me.role == 'ADMIN'}">
+            <p class="nav-label">관리자</p>
+            <div class="admin">
+                <a href="${ctx}/admin/dashboard" class="${nav == 'dashboard' ? 'on' : ''}"><i data-lucide="chart-column"></i>통계 대시보드</a>
+                <a href="${ctx}/admin/approvals" class="${nav == 'approvals' ? 'on' : ''}"><i data-lucide="shield-check"></i>가입 승인</a>
+                <a href="${ctx}/admin/members" class="${nav == 'manage' ? 'on' : ''}"><i data-lucide="user-cog"></i>회원 관리</a>
+                <a href="${ctx}/admin/notices/write" class="${nav == 'noticeWrite' ? 'on' : ''}"><i data-lucide="pencil"></i>공지 작성</a>
+                <a href="${ctx}/admin/schedules/write" class="${nav == 'scheduleWrite' ? 'on' : ''}"><i data-lucide="plus"></i>일정 등록</a>
+                <a href="${ctx}/admin/club" class="${nav == 'club' ? 'on' : ''}"><i data-lucide="settings"></i>동아리 설정</a>
+            </div>
+        </c:if>
+    </nav>
+
+    <div class="side-me">
+        <t:avatar name="${me.name}" src="${me.profile_image}" />
+        <span><b>${fn:escapeXml(me.name)}</b><small>${me.role == 'ADMIN' ? '관리자' : '일반회원'}</small></span>
+        <a class="icon-btn" href="${ctx}/logout" title="로그아웃" aria-label="로그아웃"><i data-lucide="log-out"></i></a>
+    </div>
+    <%-- 화면 확인용(DemoServlet). 로그인 기능이 생기면 지운다 --%>
+    <p class="demo-switch">데모 보기: <a href="?as=admin">관리자</a> · <a href="?as=member">회원</a></p>
+</aside>
+<div class="scrim" data-toggle-nav></div>
+
+<main class="main">
+<section class="panel ${panelClass}">
+    <header class="panel-head">
+        <div class="head-left">
+            <button class="icon-btn menu-btn" type="button" data-toggle-nav aria-label="메뉴 열기"><i data-lucide="menu"></i></button>
+            <c:choose>
+                <c:when test="${not empty back}"><a class="icon-btn" href="${back}" aria-label="뒤로"><i data-lucide="chevron-left"></i></a></c:when>
+                <c:otherwise><a class="brand" href="${ctx}/"><img class="logo sm" src="${ctx}/img/logo.svg" alt="">모아</a></c:otherwise>
+            </c:choose>
+        </div>
+        <h1>${title}</h1>
+        <div class="head-right">
+            ${headExtra}
+            <c:choose>
+                <c:when test="${admin}"><span class="badge purple">관리자</span></c:when>
+                <c:otherwise><%@ include file="/WEB-INF/views/layout/bell.jspf" %></c:otherwise>
+            </c:choose>
+        </div>
+    </header>
+    <div class="panel-body">
