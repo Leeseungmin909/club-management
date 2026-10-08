@@ -1,98 +1,123 @@
--- 동아리 조아 DB 스키마 (계획서_변경사항.md 부록 기준)
+-- 동아리 조아 DB 스키마
+-- 테이블 정의는 dbdiagram.io 설계(MySQL 내보내기)와 동일하게 유지한다.
 -- 실행: sudo mysql < schema.sql   (기존 clubapp DB를 지우고 새로 만든다)
 
 DROP DATABASE IF EXISTS clubapp;
 CREATE DATABASE clubapp DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE clubapp;
 
-CREATE TABLE club (
-    id         INT          PRIMARY KEY,               -- 항상 1
-    name       VARCHAR(50)  NOT NULL,
-    school     VARCHAR(50),
-    intro      VARCHAR(500),
-    image_path VARCHAR(255)
+-- 테이블 (dbdiagram.io 내보내기) -------------------------------------------
+
+CREATE TABLE `club` (
+  `id` int PRIMARY KEY COMMENT '항상 1 (동아리는 하나)',
+  `name` varchar(50) NOT NULL COMMENT '동아리 이름',
+  `school` varchar(50) COMMENT '학교',
+  `intro` varchar(500) COMMENT '소개',
+  `image_path` varchar(255) COMMENT '대표 이미지 경로'
 );
 
-CREATE TABLE department (
-    id   INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE
+CREATE TABLE `department` (
+  `id` int PRIMARY KEY AUTO_INCREMENT COMMENT '학과 번호',
+  `name` varchar(50) UNIQUE NOT NULL COMMENT '학과 이름 (검색 대상)'
 );
 
-CREATE TABLE member (
-    student_no    VARCHAR(20)  PRIMARY KEY,             -- 학번 (숫자 8자리)
-    naver_id      VARCHAR(100) NOT NULL UNIQUE,
-    name          VARCHAR(30)  NOT NULL,
-    department_id INT          NOT NULL,
-    phone         VARCHAR(20),                          -- 탈퇴 시 NULL
-    profile_image VARCHAR(255),
-    role          ENUM('ADMIN','MEMBER')                      NOT NULL DEFAULT 'MEMBER',
-    status        ENUM('PENDING','ACTIVE','WITHDRAWN','KICKED') NOT NULL DEFAULT 'PENDING',
-    requested_at  DATETIME NOT NULL,
-    approved_at   DATETIME,
-    left_at       DATETIME,                             -- 탈퇴·추방일
-    FOREIGN KEY (department_id) REFERENCES department (id)
+CREATE TABLE `member` (
+  `student_no` varchar(20) PRIMARY KEY COMMENT '학번 (숫자 8자리)',
+  `naver_id` varchar(100) UNIQUE NOT NULL COMMENT '네이버 고유 ID (로그인할 때 회원 찾기용)',
+  `name` varchar(30) NOT NULL COMMENT '이름 (네이버)',
+  `department_id` int NOT NULL COMMENT '학과 번호 (가입 시 검색 후 선택)',
+  `phone` varchar(20) COMMENT '전화번호 (네이버), 탈퇴 시 NULL',
+  `profile_image` varchar(255) COMMENT '프로필 이미지 경로',
+  `role` ENUM ('ADMIN', 'MEMBER') NOT NULL DEFAULT 'MEMBER',
+  `status` ENUM ('PENDING', 'ACTIVE', 'WITHDRAWN', 'KICKED') NOT NULL DEFAULT 'PENDING',
+  `requested_at` datetime NOT NULL COMMENT '가입 신청일',
+  `approved_at` datetime COMMENT '승인일 (그래프 신규 가입자 기준)',
+  `left_at` datetime COMMENT '탈퇴·추방일 (그래프 탈퇴자 기준)'
 );
 
-CREATE TABLE notice (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    writer_no  VARCHAR(20)  NOT NULL,
-    title      VARCHAR(100) NOT NULL,
-    content    TEXT         NOT NULL,
-    is_pinned  BOOLEAN      NOT NULL DEFAULT FALSE,
-    view_count INT          NOT NULL DEFAULT 0,
-    created_at DATETIME     NOT NULL,
-    updated_at DATETIME,
-    FOREIGN KEY (writer_no) REFERENCES member (student_no) ON UPDATE CASCADE
+CREATE TABLE `notice` (
+  `id` int PRIMARY KEY AUTO_INCREMENT COMMENT '공지 번호',
+  `writer_no` varchar(20) NOT NULL COMMENT '작성자 학번',
+  `title` varchar(100) NOT NULL COMMENT '제목 (검색 대상)',
+  `content` text NOT NULL COMMENT '본문',
+  `is_pinned` boolean NOT NULL DEFAULT false COMMENT '상단 고정 여부',
+  `view_count` int NOT NULL DEFAULT 0 COMMENT '조회수',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime
 );
 
-CREATE TABLE schedule (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    writer_no  VARCHAR(20)   NOT NULL,
-    title      VARCHAR(100)  NOT NULL,
-    content    TEXT,
-    start_at   DATETIME      NOT NULL,
-    end_at     DATETIME,
-    place_name VARCHAR(100),
-    address    VARCHAR(200),
-    latitude   DECIMAL(10,7),
-    longitude  DECIMAL(10,7),
-    created_at DATETIME      NOT NULL,
-    updated_at DATETIME,
-    FOREIGN KEY (writer_no) REFERENCES member (student_no) ON UPDATE CASCADE
+CREATE TABLE `schedule` (
+  `id` int PRIMARY KEY AUTO_INCREMENT COMMENT '일정 번호',
+  `writer_no` varchar(20) NOT NULL COMMENT '등록자 학번',
+  `title` varchar(100) NOT NULL,
+  `content` text,
+  `start_at` datetime NOT NULL COMMENT '시작 시간',
+  `end_at` datetime COMMENT '종료 시간',
+  `place_name` varchar(100) COMMENT '장소 이름',
+  `address` varchar(200) COMMENT '주소',
+  `latitude` decimal(10,7) COMMENT '위도',
+  `longitude` decimal(10,7) COMMENT '경도',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime COMMENT '수정일'
 );
 
-CREATE TABLE attendance (
-    schedule_id INT         NOT NULL,
-    student_no  VARCHAR(20) NOT NULL,
-    status      ENUM('ATTEND','ABSENT') NOT NULL,
-    updated_at  DATETIME    NOT NULL,
-    PRIMARY KEY (schedule_id, student_no),
-    FOREIGN KEY (schedule_id) REFERENCES schedule (id) ON DELETE CASCADE,
-    FOREIGN KEY (student_no)  REFERENCES member (student_no) ON UPDATE CASCADE
+CREATE TABLE `attendance` (
+  `schedule_id` int NOT NULL,
+  `student_no` varchar(20) NOT NULL,
+  `status` ENUM ('ATTEND', 'ABSENT') NOT NULL,
+  `updated_at` datetime NOT NULL COMMENT '마지막으로 누른 시간',
+  PRIMARY KEY (`schedule_id`, `student_no`)
 );
 
-CREATE TABLE chat_message (
-    id           INT AUTO_INCREMENT PRIMARY KEY,
-    sender_no    VARCHAR(20) NOT NULL,
-    message_type ENUM('TEXT','IMAGE','VIDEO') NOT NULL DEFAULT 'TEXT',
-    content      TEXT,                                  -- 파일 메시지는 비어 있음
-    file_path    VARCHAR(255),
-    file_name    VARCHAR(255),
-    created_at   DATETIME NOT NULL,
-    FOREIGN KEY (sender_no) REFERENCES member (student_no) ON UPDATE CASCADE
+CREATE TABLE `chat_message` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `sender_no` varchar(20) NOT NULL COMMENT '보낸 사람 학번',
+  `message_type` ENUM ('TEXT', 'IMAGE', 'VIDEO') NOT NULL DEFAULT 'TEXT',
+  `content` text COMMENT '글자 내용 (파일 메시지는 비어 있음)',
+  `file_path` varchar(255) COMMENT '이미지·동영상 저장 경로',
+  `file_name` varchar(255) COMMENT '원래 파일 이름',
+  `created_at` datetime NOT NULL COMMENT '보낸 시간'
 );
 
-CREATE TABLE notification (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    receiver_no VARCHAR(20)  NOT NULL,
-    type        ENUM('APPROVED','NOTICE','SCHEDULE') NOT NULL,
-    message     VARCHAR(200) NOT NULL,
-    link_url    VARCHAR(200),
-    is_read     BOOLEAN      NOT NULL DEFAULT FALSE,
-    created_at  DATETIME     NOT NULL,
-    FOREIGN KEY (receiver_no) REFERENCES member (student_no) ON UPDATE CASCADE,
-    INDEX (receiver_no, is_read)
+CREATE TABLE `notification` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `receiver_no` varchar(20) NOT NULL COMMENT '받는 사람 학번',
+  `type` ENUM ('APPROVED', 'NOTICE', 'SCHEDULE') NOT NULL,
+  `message` varchar(200) NOT NULL COMMENT '알림 문구',
+  `link_url` varchar(200) COMMENT '누르면 이동할 주소',
+  `is_read` boolean NOT NULL DEFAULT false,
+  `created_at` datetime NOT NULL
 );
+
+ALTER TABLE `club` COMMENT = '동아리 정보. 한 줄만 존재 (SFR-05)';
+
+ALTER TABLE `department` COMMENT = '학과 목록. 가입 시 검색해서 선택 (SFR-02)';
+
+ALTER TABLE `member` COMMENT = '회원, 역할, 가입 상태 (SFR-01~12, 26)';
+
+ALTER TABLE `notice` COMMENT = '공지사항 (SFR-13~16, 30)';
+
+ALTER TABLE `schedule` COMMENT = '일정과 장소 좌표 (SFR-17~19, 23, 24)';
+
+ALTER TABLE `attendance` COMMENT = '일정별 참석·불참. 줄이 없으면 미응답 (SFR-20~22, 26)';
+
+ALTER TABLE `chat_message` COMMENT = '동아리 단체 채팅, 이미지·동영상 포함 (SFR-29)';
+
+ALTER TABLE `notification` COMMENT = '알림 (SFR-27, 28)';
+
+ALTER TABLE `member` ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`);
+
+ALTER TABLE `notice` ADD FOREIGN KEY (`writer_no`) REFERENCES `member` (`student_no`) ON UPDATE CASCADE;
+
+ALTER TABLE `schedule` ADD FOREIGN KEY (`writer_no`) REFERENCES `member` (`student_no`) ON UPDATE CASCADE;
+
+ALTER TABLE `attendance` ADD FOREIGN KEY (`schedule_id`) REFERENCES `schedule` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `attendance` ADD FOREIGN KEY (`student_no`) REFERENCES `member` (`student_no`) ON UPDATE CASCADE;
+
+ALTER TABLE `chat_message` ADD FOREIGN KEY (`sender_no`) REFERENCES `member` (`student_no`) ON UPDATE CASCADE;
+
+ALTER TABLE `notification` ADD FOREIGN KEY (`receiver_no`) REFERENCES `member` (`student_no`) ON UPDATE CASCADE;
 
 -- 초기 데이터 ------------------------------------------------------------
 
