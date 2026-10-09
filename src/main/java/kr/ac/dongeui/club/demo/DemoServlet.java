@@ -151,14 +151,10 @@ public class DemoServlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/views/" + view + ".jsp").forward(req, resp);
     }
 
-    /** 폼 제출은 저장하지 않고 다음 화면으로만 이동한다. AI 다듬기는 아직 연결 전이라 실패로 응답한다. */
+    /** 폼 제출은 저장하지 않고 다음 화면으로만 이동한다. */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String path = req.getServletPath() + Objects.toString(req.getPathInfo(), "");
-        if (path.equals("/admin/notices/ai")) {
-            resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            return;
-        }
         String to = path.startsWith("/admin/notices") ? "/notices"
                 : path.startsWith("/admin/schedules") ? "/schedules"
                 : null;

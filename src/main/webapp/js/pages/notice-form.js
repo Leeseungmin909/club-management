@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     label.textContent = 'AI가 다듬는 중…';
     try {
       const res = await fetch(btn.dataset.url, { method: 'POST', body: new URLSearchParams({ draft: box.value }) });
+      if (res.status === 400) { toast(await res.text()); return; }  // 초안 문제 (비었거나 너무 김)
       if (!res.ok) throw new Error(res.status);
       box.value = await res.text();
       hint.textContent = '문장을 자연스럽게 정리했어요';
