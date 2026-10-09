@@ -22,6 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('form[data-confirm]').forEach(f =>
     f.addEventListener('submit', e => { if (!confirm(f.dataset.confirm)) e.preventDefault(); }));
 
+  // 파일은 100MB 까지 (NFR-14). 서버도 다시 검사하지만, 큰 파일은 올리기 전에 막는다
+  document.querySelectorAll('input[type=file]').forEach(input =>
+    input.addEventListener('change', e => {
+      if (input.files[0] && input.files[0].size > 100 * 1024 * 1024) {
+        toast('파일은 100MB 이하만 올릴 수 있어요.');
+        input.value = '';
+        e.stopImmediatePropagation();
+      }
+    }));
+
   // <input type="file" data-preview="박스id">: 고른 이미지를 박스에 미리 보여 주고, 같은 폼의 저장 버튼을 켠다
   document.querySelectorAll('input[type=file][data-preview]').forEach(input =>
     input.addEventListener('change', () => {

@@ -1,5 +1,7 @@
 package kr.ac.dongeui.club.domain.member.service;
 
+import jakarta.servlet.http.Part;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -8,13 +10,15 @@ import kr.ac.dongeui.club.domain.member.entity.Member;
 import kr.ac.dongeui.club.domain.member.repository.DepartmentRepository;
 import kr.ac.dongeui.club.domain.member.repository.MemberRepository;
 import kr.ac.dongeui.club.domain.notification.repository.NotificationRepository;
+import kr.ac.dongeui.club.global.infra.file.LocalFileStorageService;
 
-/** 로그인 · 가입 신청 · 가입 승인 (SFR-01, 02, 06) */
+/** 로그인 · 가입 신청 · 가입 승인 · 프로필 이미지 (SFR-01, 02, 06, 12) */
 public class MemberService {
 
     private final MemberRepository memberRepository = new MemberRepository();
     private final DepartmentRepository departmentRepository = new DepartmentRepository();
     private final NotificationRepository notificationRepository = new NotificationRepository();
+    private final LocalFileStorageService fileStorage = new LocalFileStorageService();
 
     public Member findByNaverId(String naverId) throws SQLException {
         return memberRepository.findByNaverId(naverId);
@@ -41,6 +45,18 @@ public class MemberService {
     public Member reject(String studentNo) throws SQLException {
         Member member = memberRepository.findByStudentNo(studentNo);
         return member != null && memberRepository.deletePending(studentNo) ? member : null;
+    }
+
+    /** 프로필 이미지 변경 (SFR-12): 새 파일 저장 → DB 경로 변경 → 예전 파일 삭제 */
+    public void changeProfileImage(Member me, Part photo) throws SQLException, IOException {
+        String url = fileStorage.store(photo, LocalFileStorageService.IMAGES);
+        try {
+            memberRepository.updateProfileImage(me.getStudentNo(), url);
+        } catch (SQLException e) {
+            fileStorage.delete(url);  // DB 저장 실패 시 방금 올린 파일 정리
+            throw e;
+        }
+        fileStorage.delete(me.getProfileImage());
     }
 
     /**

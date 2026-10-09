@@ -56,7 +56,7 @@
             <label class="file-btn"><i data-lucide="image"></i>파일 선택
                 <input type="file" name="photo" accept=".jpg,.jpeg,.png" data-preview="photoPreview" required>
             </label>
-            <p class="hint" style="text-align:center">JPG, PNG 파일을 선택할 수 있어요.</p>
+            <p class="hint" style="text-align:center">JPG, PNG 파일을 선택할 수 있어요. (최대 100MB)</p>
         </div>
         <div class="dlg-foot">
             <button class="btn" type="button" data-close>취소</button>

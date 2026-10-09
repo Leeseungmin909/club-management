@@ -41,6 +41,14 @@ public class MemberRepository {
         return update("UPDATE member SET status = 'ACTIVE', approved_at = NOW() WHERE student_no = ? AND status = 'PENDING'", studentNo);
     }
 
+    public void updateProfileImage(String studentNo, String url) throws SQLException {
+        try (Connection c = Db.get(); PreparedStatement ps = c.prepareStatement("UPDATE member SET profile_image = ? WHERE student_no = ?")) {
+            ps.setString(1, url);
+            ps.setString(2, studentNo);
+            ps.executeUpdate();
+        }
+    }
+
     /** 가입 거절: 신청 줄을 지운다 (다시 로그인하면 가입 신청부터) */
     public boolean deletePending(String studentNo) throws SQLException {
         return update("DELETE FROM member WHERE student_no = ? AND status = 'PENDING'", studentNo);
