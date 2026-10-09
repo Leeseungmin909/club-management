@@ -12,7 +12,7 @@
     <c:forEach items="${messages}" var="m">
         <c:set var="day"><t:date value="${m.created_at}" pattern="yyyy년 M월 d일 EEEE" /></c:set>
         <c:if test="${day != lastDay}"><p class="day-sep">${day}</p><c:set var="lastDay" value="${day}" /></c:if>
-        <c:set var="mine" value="${m.sender_no == me.student_no}" />
+        <c:set var="mine" value="${m.sender_no == me.studentNo}" />
         <div class="msg ${mine ? 'mine' : ''}">
             <c:if test="${not mine}"><t:avatar name="${m.name}" src="${m.profile_image}" /></c:if>
             <div>

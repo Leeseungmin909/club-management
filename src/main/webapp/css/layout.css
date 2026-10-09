@@ -29,8 +29,6 @@
 .side-me > span:not(.avatar) { flex: 1; min-width: 0; }
 .side-me b { display: block; font-size: 13px; }
 .side-me small { font-size: 11px; color: var(--muted); }
-.demo-switch { padding: 0 16px 12px; font-size: 11px; color: var(--muted); }
-.demo-switch a { color: var(--primary); text-decoration: underline; }
 .scrim { display: none; }
 
 .main { flex: 1; min-width: 0; display: flex; justify-content: center; padding: 28px 20px 40px; }

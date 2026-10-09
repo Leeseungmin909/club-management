@@ -7,16 +7,16 @@
 
 <div class="profile-card">
     <span class="avatar-wrap">
-        <t:avatar name="${me.name}" src="${me.profile_image}" size="xl" ring="true" />
+        <t:avatar name="${me.name}" src="${me.profileImage}" size="xl" ring="true" />
         <button class="cam" type="button" data-open="photoDlg" aria-label="사진 변경"><i data-lucide="camera"></i></button>
     </span>
     <button class="link-btn" type="button" data-open="photoDlg">사진 변경</button>
     <h2>${fn:escapeXml(me.name)} <span class="badge ${me.role == 'ADMIN' ? 'purple' : ''}">${me.role == 'ADMIN' ? '관리자' : '회원'}</span></h2>
-    <p class="meta">${fn:escapeXml(me.department)} · ${fn:escapeXml(me.student_no)}</p>
+    <p class="meta">${fn:escapeXml(me.departmentName)} · ${fn:escapeXml(me.studentNo)}</p>
     <div class="info3">
         <div><small>전화번호</small><b>${fn:escapeXml(me.phone)}</b></div>
         <div><small>역할</small><b>${me.role == 'ADMIN' ? '관리자' : '회원'}</b></div>
-        <div><small>가입일</small><b><t:date value="${me.approved_at}" pattern="yyyy. MM. dd" /></b></div>
+        <div><small>가입일</small><b><t:date value="${me.approvedAt}" pattern="yyyy. MM. dd" /></b></div>
     </div>
 </div>
 

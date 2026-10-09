@@ -20,11 +20,9 @@
         <div class="kv">
             <div><span>가입 동아리</span><b>${fn:escapeXml(club.name)}</b></div>
             <div><span>신청자</span><b>${fn:escapeXml(applicant.name)}</b></div>
-            <div><span>신청일</span><b><t:date value="${applicant.requested_at}" pattern="yyyy. MM. dd" /></b></div>
+            <div><span>신청일</span><b><t:date value="${applicant.requestedAt}" pattern="yyyy. MM. dd" /></b></div>
         </div>
         <p class="muted small row" style="justify-content:center"><i data-lucide="bell"></i>승인되면 알림으로 알려드릴게요</p>
-        <%-- 화면 확인용(DemoServlet). 실제로는 승인 후 다시 로그인하면 홈으로 이동 --%>
-        <p style="margin-top:18px"><a class="link-btn" href="${ctx}/">승인 완료 화면 미리보기 ›</a></p>
     </div>
 </div>
 </body>

@@ -8,7 +8,7 @@
         <p>${greeting},</p>
         <h2>${fn:escapeXml(fn:length(me.name) > 2 ? fn:substring(me.name, 1, fn:length(me.name)) : me.name)}님 <em>반가워요!</em></h2>
     </div>
-    <t:avatar name="${me.name}" src="${me.profile_image}" size="lg" ring="true" />
+    <t:avatar name="${me.name}" src="${me.profileImage}" size="lg" ring="true" />
 </div>
 
 <c:choose>

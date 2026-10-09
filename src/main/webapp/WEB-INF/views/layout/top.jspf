@@ -13,7 +13,7 @@
     </a>
 
     <a class="club-card" href="${ctx}/me">
-        <t:avatar name="${club.name}" src="${club.image_path}" size="md" ring="true" />
+        <t:avatar name="${club.name}" src="${club.imagePath}" size="md" ring="true" />
         <span><b class="ellipsis">${fn:escapeXml(club.name)}</b><small>${fn:escapeXml(club.school)}</small></span>
         <i data-lucide="chevron-right"></i>
     </a>
@@ -40,12 +40,10 @@
     </nav>
 
     <div class="side-me">
-        <t:avatar name="${me.name}" src="${me.profile_image}" />
+        <t:avatar name="${me.name}" src="${me.profileImage}" />
         <span><b>${fn:escapeXml(me.name)}</b><small>${me.role == 'ADMIN' ? '관리자' : '일반회원'}</small></span>
         <a class="icon-btn" href="${ctx}/logout" title="로그아웃" aria-label="로그아웃"><i data-lucide="log-out"></i></a>
     </div>
-    <%-- 화면 확인용(DemoServlet). 로그인 기능이 생기면 지운다 --%>
-    <p class="demo-switch">데모 보기: <a href="?as=admin">관리자</a> · <a href="?as=member">회원</a></p>
 </aside>
 <div class="scrim" data-toggle-nav></div>
 

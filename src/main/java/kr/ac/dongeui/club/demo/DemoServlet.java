@@ -6,7 +6,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,18 +19,16 @@ import java.util.Objects;
 
 /**
  * 화면 확인용 임시 서블릿. 예시 데이터를 DB 컬럼 이름 그대로 넣어 JSP를 보여 준다.
- * 기능을 구현하면 해당 주소를 실제 Servlet이 맡고, 모두 바뀌면 이 파일을 삭제한다.
+ * 기능을 구현하면 해당 주소를 실제 Controller 가 맡고, 모두 바뀌면 이 파일을 삭제한다.
+ * 로그인 · 가입 · 권한 검사는 실제 코드(AuthController, SignupController, AuthFilter)가 처리한다.
  */
-@WebServlet(urlPatterns = {"", "/login", "/login/*", "/signup", "/pending", "/logout", "/deleted",
+@WebServlet(urlPatterns = {"", "/deleted",
         "/notices", "/notices/*", "/schedules", "/schedules/*", "/chat", "/members", "/me", "/me/*",
         "/notifications", "/notifications/*", "/admin/*"})
 public class DemoServlet extends HttpServlet {
 
     private static final LocalDateTime NOW = LocalDateTime.now().withSecond(0).withNano(0);
     private static final LocalDateTime TODAY_AT = NOW.toLocalDate().atStartOfDay();
-
-    private static final Map<String, Object> CLUB = row("name", "사진연구회", "school", "동의대학교",
-            "intro", "사진을 좋아하는 사람들이 모여 함께 출사를 다니는 동아리입니다.", "image_path", null);
 
     private static final List<Map<String, Object>> MEMBERS = List.of(
             member("20201001", "김도윤", "컴퓨터소프트웨어공학과", "010-1234-0001", "ADMIN", 400),
@@ -66,7 +63,7 @@ public class DemoServlet extends HttpServlet {
             sched(5, "신입 부원 환영회", -26, 18, 0, "동아리방", null, null, null, null));
 
     private static final List<Map<String, Object>> NOTIS = List.of(
-            row("id", 1, "type", "APPROVED", "message", "이제 사진연구회의 모든 기능을 이용할 수 있어요.", "link_url", "/",
+            row("id", 1, "type", "APPROVED", "message", "이제 CPU의 모든 기능을 이용할 수 있어요.", "link_url", "/",
                     "is_read", false, "created_at", NOW.minusMinutes(1)),
             row("id", 2, "type", "NOTICE", "message", "10월 정기 출사 안내를 확인해 주세요.", "link_url", "/notices/view?id=1",
                     "is_read", false, "created_at", NOW.minusMinutes(10)),
@@ -78,17 +75,6 @@ public class DemoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath() + Objects.toString(req.getPathInfo(), "");
-        HttpSession session = req.getSession();
-        String as = req.getParameter("as");
-        if (as != null || session.getAttribute("me") == null) {
-            session.setAttribute("me", me("member".equals(as) ? "MEMBER" : "ADMIN"));
-        }
-        Map<?, ?> me = (Map<?, ?>) session.getAttribute("me");
-        if (path.startsWith("/admin") && !"ADMIN".equals(me.get("role"))) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
-        req.setAttribute("club", CLUB);
         req.setAttribute("bell", NOTIS.subList(0, 3));
         req.setAttribute("unread", NOTIS.stream().filter(n -> !(Boolean) n.get("is_read")).count());
         req.setAttribute("memberCount", MEMBERS.size());
@@ -98,26 +84,12 @@ public class DemoServlet extends HttpServlet {
 
         String view;
         switch (path) {
-            case "/login/naver" -> { resp.sendRedirect(req.getContextPath() + "/signup"); return; }
-            case "/logout" -> { session.invalidate(); resp.sendRedirect(req.getContextPath() + "/login"); return; }
             case "/notifications/open" -> {
                 String id = req.getParameter("id");
                 String link = NOTIS.stream().filter(n -> n.get("id").toString().equals(id))
                         .map(n -> (String) n.get("link_url")).findFirst().orElse("/notifications");
                 resp.sendRedirect(req.getContextPath() + link);
                 return;
-            }
-            case "/login" -> view = "auth/login";
-            case "/signup" -> {
-                req.setAttribute("naver", row("name", "김민지", "phone", "010-1234-0003"));
-                req.setAttribute("departments", List.of(row("name", "컴퓨터소프트웨어공학과"), row("name", "컴퓨터공학과"),
-                        row("name", "인공지능학과"), row("name", "시각디자인학과"), row("name", "디자인조형학과"),
-                        row("name", "경영학과"), row("name", "영화학과"), row("name", "신문방송학과")));
-                view = "auth/signup";
-            }
-            case "/pending" -> {
-                req.setAttribute("applicant", row("name", "김민지", "requested_at", NOW.minusDays(1)));
-                view = "auth/pending";
             }
             case "/" -> {
                 int h = NOW.getHour();
@@ -224,10 +196,8 @@ public class DemoServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return;
         }
-        String to = path.equals("/signup") ? "/pending"
-                : path.startsWith("/admin/notices") ? "/notices"
+        String to = path.startsWith("/admin/notices") ? "/notices"
                 : path.startsWith("/admin/schedules") ? "/schedules"
-                : path.equals("/me/withdraw") ? "/logout"
                 : null;
         String referer = req.getHeader("Referer");
         resp.sendRedirect(to != null ? req.getContextPath() + to : referer != null ? referer : req.getContextPath() + "/");
@@ -243,12 +213,6 @@ public class DemoServlet extends HttpServlet {
 
     private static Map<String, Object> find(List<Map<String, Object>> rows, String id) {
         return rows.stream().filter(r -> r.get("id").toString().equals(id)).findFirst().orElse(null);
-    }
-
-    private static Map<String, Object> me(String role) {
-        Map<String, Object> me = new LinkedHashMap<>(MEMBERS.get(2));
-        me.put("role", role);
-        return me;
     }
 
     private static Map<String, Object> member(String no, String name, String dept, String phone, String role, int daysAgo) {

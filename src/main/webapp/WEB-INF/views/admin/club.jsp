@@ -12,7 +12,7 @@
         <span>대표 이미지</span>
         <div class="drop square" id="clubPreview">
             <c:choose>
-                <c:when test="${not empty club.image_path}"><img src="${fn:escapeXml(club.image_path)}" alt=""></c:when>
+                <c:when test="${not empty club.imagePath}"><img src="${fn:escapeXml(club.imagePath)}" alt=""></c:when>
                 <c:otherwise><span><i data-lucide="image"></i><br>대표 이미지를 올려 주세요</span></c:otherwise>
             </c:choose>
         </div>

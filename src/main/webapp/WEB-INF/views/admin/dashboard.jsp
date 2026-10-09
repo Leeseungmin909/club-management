@@ -10,7 +10,7 @@
         <h2>관리자 대시보드</h2>
         <p class="muted">동아리의 성장을 한눈에 확인하세요.</p>
     </div>
-    <t:avatar name="${me.name}" src="${me.profile_image}" size="lg" ring="true" />
+    <t:avatar name="${me.name}" src="${me.profileImage}" size="lg" ring="true" />
 </div>
 
 <div class="stats">

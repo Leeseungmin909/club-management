@@ -13,7 +13,7 @@
 </div>
 
 <c:forEach items="${members}" var="m">
-    <c:set var="isMe" value="${m.student_no == me.student_no}" />
+    <c:set var="isMe" value="${m.student_no == me.studentNo}" />
     <div class="mrow">
         <div class="mrow-top">
             <t:avatar name="${m.name}" src="${m.profile_image}" size="md" ring="${m.role == 'ADMIN'}" />

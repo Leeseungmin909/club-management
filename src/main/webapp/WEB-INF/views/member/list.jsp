@@ -10,7 +10,7 @@
         <div>
             <t:avatar name="${m.name}" src="${m.profile_image}" size="md" />
             <span class="grow">
-                <span class="row title-sm">${fn:escapeXml(m.name)}<c:if test="${m.student_no == me.student_no}"><span class="badge">나</span></c:if></span>
+                <span class="row title-sm">${fn:escapeXml(m.name)}<c:if test="${m.student_no == me.studentNo}"><span class="badge">나</span></c:if></span>
                 <span class="meta">${fn:escapeXml(m.student_no)} · ${fn:escapeXml(m.department)}</span>
                 <c:if test="${me.role == 'ADMIN'}"><span class="meta">${fn:escapeXml(m.phone)}</span></c:if>
             </span>
