@@ -21,6 +21,30 @@
 .round.send:disabled { background: #e3e1ea; }
 .head-count { font-size: 12px; color: var(--muted); }
 
+/* 시간 · 수정 · 삭제 */
+.msg-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.msg.mine .msg-meta { align-items: flex-end; }
+.msg-actions { display: flex; gap: 2px; }
+.msg-action { display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; }
+.msg-action:hover { background: #ebe9f2; color: var(--text); }
+.msg-action svg.lucide { width: 13px; height: 13px; }
+@media (hover: hover) {  /* 마우스가 있으면 올렸을 때만, 터치 화면은 항상 보인다 */
+  .msg-actions { visibility: hidden; }
+  .msg:hover .msg-actions, .msg-actions:focus-within { visibility: visible; }
+}
+
+/* 보내기 전 미리보기 */
+#fileDlg { width: min(440px, calc(100% - 32px)); }
+.file-preview { display: grid; place-items: center; min-height: 160px; margin-bottom: 10px; overflow: hidden; border-radius: 14px; background: #1c1c24; }
+.file-preview img, .file-preview video { width: 100%; max-height: 360px; object-fit: contain; }
+
+/* 파일 업로드 진행률 */
+.upload-progress { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 10px 16px; border-top: 1px solid var(--line); background: #fff; font-size: 12px; color: var(--text-2); }
+.upload-progress span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.upload-progress b { color: var(--primary); }
+.upload-progress .bar { grid-column: 1 / -1; height: 6px; margin: 0; background: var(--primary-50); }
+.upload-progress .bar i { width: 0; transition: width .2s; }
+
 @media (max-width: 860px) {
   .panel.chat { height: 100vh; height: 100dvh; }
 }

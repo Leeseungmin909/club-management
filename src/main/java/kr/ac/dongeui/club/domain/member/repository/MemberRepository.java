@@ -25,6 +25,15 @@ public class MemberRepository {
         return findOne(SELECT + "WHERE m.student_no = ?", studentNo);
     }
 
+    public int countActive() throws SQLException {
+        try (Connection c = Db.get();
+             PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM member WHERE status = 'ACTIVE'");
+             ResultSet rs = ps.executeQuery()) {
+            rs.next();
+            return rs.getInt(1);
+        }
+    }
+
     /** 가입 대기 목록 (신청 순서대로) */
     public List<Member> findPending() throws SQLException {
         try (Connection c = Db.get();

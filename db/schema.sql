@@ -77,7 +77,8 @@ CREATE TABLE `chat_message` (
   `content` text COMMENT '글자 내용 (파일 메시지는 비어 있음)',
   `file_path` varchar(255) COMMENT '이미지·동영상 저장 경로',
   `file_name` varchar(255) COMMENT '원래 파일 이름',
-  `created_at` datetime NOT NULL COMMENT '보낸 시간'
+  `created_at` datetime NOT NULL COMMENT '보낸 시간',
+  `updated_at` datetime COMMENT '수정 시간 (수정됨 표시)'
 );
 
 CREATE TABLE `notification` (

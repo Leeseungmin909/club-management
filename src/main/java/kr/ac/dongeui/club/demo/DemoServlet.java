@@ -23,7 +23,7 @@ import java.util.Objects;
  * 로그인 · 가입 · 권한 검사는 실제 코드(AuthController, SignupController, AuthFilter)가 처리한다.
  */
 @WebServlet(urlPatterns = {"", "/deleted",
-        "/notices", "/notices/*", "/schedules", "/schedules/*", "/chat", "/members", "/me", "/me/*",
+        "/notices", "/notices/*", "/schedules", "/schedules/*", "/members", "/me", "/me/*",
         "/admin/*"})
 public class DemoServlet extends HttpServlet {
 
@@ -117,16 +117,6 @@ public class DemoServlet extends HttpServlet {
                     view = "schedule/view";
                 }
             }
-            case "/chat" -> {
-                req.setAttribute("messages", List.of(
-                        chat("20211002", "TEXT", "이번 주 출사 날씨가 정말 좋대요!", null, NOW.minusDays(1).withHour(13).withMinute(32)),
-                        chat("20201001", "TEXT", "맞아요. 해운대 이벤트광장 앞에서 2시에 만나요.", null, NOW.minusDays(1).withHour(13).withMinute(34)),
-                        chat("20221003", "TEXT", "저도 참석할게요! 카메라 배터리 넉넉히 챙겨갈게요.", null, NOW.minusDays(1).withHour(13).withMinute(36)),
-                        chat("20231005", "IMAGE", null, "/img/demo-photo.svg", NOW.minusDays(1).withHour(13).withMinute(39)),
-                        chat("20231005", "TEXT", "지난번 광안리에서 찍은 사진이에요. 출사 끝나고 다 같이 저녁 먹을 사람도 있나요?", null, NOW.minusDays(1).withHour(13).withMinute(40)),
-                        chat("20221004", "TEXT", "좋아요 🙌", null, NOW.withHour(9).withMinute(5))));
-                view = "chat";
-            }
             case "/members" -> { req.setAttribute("members", MEMBERS); view = "member/list"; }
             case "/me" -> {
                 req.setAttribute("myTotal", 7);
@@ -201,11 +191,6 @@ public class DemoServlet extends HttpServlet {
                 "dday", ChronoUnit.DAYS.between(NOW.toLocalDate(), start.toLocalDate()), "started", start.isBefore(NOW));
     }
 
-    private static Map<String, Object> chat(String senderNo, String type, String content, String file, LocalDateTime at) {
-        Map<String, Object> sender = MEMBERS.stream().filter(m -> m.get("student_no").equals(senderNo)).findFirst().orElseThrow();
-        return row("sender_no", senderNo, "name", sender.get("name"), "profile_image", null, "message_type", type,
-                "content", content, "file_path", file, "file_name", file == null ? null : "photo.jpg", "created_at", at);
-    }
 
     private static Map<String, Object> row(Object... kv) {
         Map<String, Object> m = new LinkedHashMap<>();

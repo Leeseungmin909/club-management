@@ -20,7 +20,7 @@ import kr.ac.dongeui.club.domain.notification.service.NotificationService;
  * 미로그인 → 로그인, 가입 신청 전 → 가입 신청, 가입 대기 → 승인 대기, /admin/* 는 관리자만.
  * 회원 정보는 요청마다 DB에서 다시 읽어 승인 · 추방 · 권한 변경이 바로 반영되게 한다.
  */
-@WebFilter("/*")
+@WebFilter(urlPatterns = "/*", asyncSupported = true)  // 채팅 SSE(/chat/stream)가 비동기라 필터도 허용해야 한다
 public class AuthFilter extends HttpFilter {
 
     private static final Set<String> PUBLIC = Set.of("/login", "/login/naver", "/login/naver/callback", "/logout");
