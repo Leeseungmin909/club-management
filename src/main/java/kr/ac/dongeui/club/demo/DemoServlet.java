@@ -170,13 +170,6 @@ public class DemoServlet extends HttpServlet {
                 req.setAttribute("pendingCount", 3);
                 view = "admin/dashboard";
             }
-            case "/admin/approvals" -> {
-                req.setAttribute("pending", List.of(
-                        row("student_no", "20241101", "name", "한지우", "department", "컴퓨터소프트웨어공학과", "requested_at", NOW.minusDays(1)),
-                        row("student_no", "20231102", "name", "오세현", "department", "경영학과", "requested_at", NOW.minusDays(2)),
-                        row("student_no", "20231103", "name", "윤가람", "department", "영화학과", "requested_at", NOW.minusDays(3))));
-                view = "admin/approvals";
-            }
             case "/admin/members" -> { req.setAttribute("members", MEMBERS); view = "admin/members"; }
             case "/admin/club" -> view = "admin/club";
             case "/admin/notices/write" -> view = "notice/form";

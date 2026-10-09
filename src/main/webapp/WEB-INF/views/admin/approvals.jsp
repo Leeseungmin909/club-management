@@ -15,20 +15,20 @@
 <c:forEach items="${pending}" var="p">
     <div class="apply">
         <div class="apply-top">
-            <t:avatar name="${p.name}" size="lg" />
+            <t:avatar name="${p.name}" src="${p.profileImage}" size="lg" />
             <div class="grow">
                 <b>${fn:escapeXml(p.name)}</b>
-                <span class="meta-2">${fn:escapeXml(p.student_no)} · ${fn:escapeXml(p.department)}</span>
-                <span class="meta">신청일 <t:date value="${p.requested_at}" pattern="yyyy. MM. dd" /></span>
+                <span class="meta-2">${fn:escapeXml(p.studentNo)} · ${fn:escapeXml(p.departmentName)}</span>
+                <span class="meta">신청일 <t:date value="${p.requestedAt}" pattern="yyyy. MM. dd" /></span>
             </div>
         </div>
         <div class="btns">
             <form method="post" action="${ctx}/admin/approvals/reject" data-confirm="${fn:escapeXml(p.name)}님의 가입 신청을 거절할까요?">
-                <input type="hidden" name="studentNo" value="${fn:escapeXml(p.student_no)}">
+                <input type="hidden" name="studentNo" value="${fn:escapeXml(p.studentNo)}">
                 <button class="btn" type="submit"><i data-lucide="x"></i>거절</button>
             </form>
-            <form method="post" action="${ctx}/admin/approvals/approve">
-                <input type="hidden" name="studentNo" value="${fn:escapeXml(p.student_no)}">
+            <form method="post" action="${ctx}/admin/approvals/approve" data-confirm="${fn:escapeXml(p.name)}님의 가입을 승인할까요?">
+                <input type="hidden" name="studentNo" value="${fn:escapeXml(p.studentNo)}">
                 <button class="btn btn-primary" type="submit"><i data-lucide="check"></i>승인</button>
             </form>
         </div>
