@@ -13,7 +13,8 @@ CREATE TABLE `club` (
   `name` varchar(50) NOT NULL COMMENT '동아리 이름',
   `school` varchar(50) COMMENT '학교',
   `intro` varchar(500) COMMENT '소개',
-  `image_path` varchar(255) COMMENT '대표 이미지 경로'
+  `image_path` varchar(255) COMMENT '대표(프로필) 이미지 경로',
+  `banner_path` varchar(255) COMMENT '배경(커버) 이미지 경로'
 );
 
 CREATE TABLE `department` (
@@ -122,7 +123,7 @@ ALTER TABLE `notification` ADD FOREIGN KEY (`receiver_no`) REFERENCES `member` (
 -- 초기 데이터 ------------------------------------------------------------
 
 INSERT INTO club (id, name, school, intro) VALUES
-    (1, '동아리 조아', '동의대학교', '동아리 소개를 입력하세요.');
+    (1, 'CPU', '동의대학교', '동아리 소개를 입력하세요.');
 
 -- 학과 목록 (초안: 실제 동의대 학과 목록으로 교체·보완 필요)
 INSERT INTO department (name) VALUES
