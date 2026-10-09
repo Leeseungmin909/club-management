@@ -24,7 +24,7 @@ import java.util.Objects;
  */
 @WebServlet(urlPatterns = {"", "/deleted",
         "/notices", "/notices/*", "/schedules", "/schedules/*", "/chat", "/members", "/me", "/me/*",
-        "/notifications", "/notifications/*", "/admin/*"})
+        "/admin/*"})
 public class DemoServlet extends HttpServlet {
 
     private static final LocalDateTime NOW = LocalDateTime.now().withSecond(0).withNano(0);
@@ -62,21 +62,9 @@ public class DemoServlet extends HttpServlet {
             sched(4, "광안리 야경 출사", -12, 19, 0, "광안리해수욕장", "부산 수영구 광안해변로 219", 35.1532, 129.1186, null),
             sched(5, "신입 부원 환영회", -26, 18, 0, "동아리방", null, null, null, null));
 
-    private static final List<Map<String, Object>> NOTIS = List.of(
-            row("id", 1, "type", "APPROVED", "message", "이제 CPU의 모든 기능을 이용할 수 있어요.", "link_url", "/",
-                    "is_read", false, "created_at", NOW.minusMinutes(1)),
-            row("id", 2, "type", "NOTICE", "message", "10월 정기 출사 안내를 확인해 주세요.", "link_url", "/notices/view?id=1",
-                    "is_read", false, "created_at", NOW.minusMinutes(10)),
-            row("id", 3, "type", "SCHEDULE", "message", "가을 출사 — 해운대 일정이 추가되었어요.", "link_url", "/schedules/view?id=1",
-                    "is_read", true, "created_at", NOW.minusDays(1)),
-            row("id", 4, "type", "NOTICE", "message", "동아리방 이용 안내 (삭제된 공지)", "link_url", "/notices/view?id=99",
-                    "is_read", true, "created_at", NOW.minusDays(4)));
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath() + Objects.toString(req.getPathInfo(), "");
-        req.setAttribute("bell", NOTIS.subList(0, 3));
-        req.setAttribute("unread", NOTIS.stream().filter(n -> !(Boolean) n.get("is_read")).count());
         req.setAttribute("memberCount", MEMBERS.size());
         req.setAttribute("myRate", 86);
         req.setAttribute("pageNo", 1);
@@ -84,13 +72,6 @@ public class DemoServlet extends HttpServlet {
 
         String view;
         switch (path) {
-            case "/notifications/open" -> {
-                String id = req.getParameter("id");
-                String link = NOTIS.stream().filter(n -> n.get("id").toString().equals(id))
-                        .map(n -> (String) n.get("link_url")).findFirst().orElse("/notifications");
-                resp.sendRedirect(req.getContextPath() + link);
-                return;
-            }
             case "/" -> {
                 int h = NOW.getHour();
                 req.setAttribute("greeting", h < 12 ? "좋은 아침이에요" : h < 18 ? "좋은 오후예요" : "좋은 저녁이에요");
@@ -156,7 +137,6 @@ public class DemoServlet extends HttpServlet {
                         row("schedule_id", 99, "title", "벚꽃 출사", "start_at", NOW.minusMonths(6), "status", "ABSENT")));
                 view = "me";
             }
-            case "/notifications" -> { req.setAttribute("notifications", NOTIS); view = "notifications"; }
             case "/deleted" -> { deleted(req, "/", null); view = "message"; }
             case "/admin/dashboard" -> {
                 List<String> labels = new ArrayList<>();

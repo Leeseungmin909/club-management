@@ -13,6 +13,7 @@ import java.util.Set;
 import kr.ac.dongeui.club.domain.club.repository.ClubRepository;
 import kr.ac.dongeui.club.domain.member.entity.Member;
 import kr.ac.dongeui.club.domain.member.service.MemberService;
+import kr.ac.dongeui.club.domain.notification.service.NotificationService;
 
 /**
  * 모든 요청의 로그인 · 가입 상태 · 역할 확인 (SFR-04, NFR-06).
@@ -26,6 +27,7 @@ public class AuthFilter extends HttpFilter {
 
     private final MemberService memberService = new MemberService();
     private final ClubRepository clubRepository = new ClubRepository();
+    private final NotificationService notificationService = new NotificationService();
 
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException {
@@ -34,6 +36,9 @@ public class AuthFilter extends HttpFilter {
             chain.doFilter(req, resp);
             return;
         }
+
+        // 화면은 브라우저에 저장하지 않는다: 뒤로 가기에도 최신 상태(알림 읽음 등)를 받고, 로그아웃 후 이전 화면도 안 보이게 (SFR-03)
+        resp.setHeader("Cache-Control", "no-store");
 
         HttpSession session = req.getSession();
         Member me = (Member) session.getAttribute("me");
@@ -52,6 +57,10 @@ public class AuthFilter extends HttpFilter {
             }
             session.setAttribute("me", me);
             req.setAttribute("club", clubRepository.find());  // 사이드바 동아리 카드
+            if (me.getStatus() == Member.Status.ACTIVE) {     // 종 아이콘: 안 읽은 수 · 최근 알림 (SFR-28)
+                req.setAttribute("unread", notificationService.unreadCount(me.getStudentNo()));
+                req.setAttribute("bell", notificationService.recent(me.getStudentNo()));
+            }
         } catch (SQLException e) {
             throw new ServletException(e);
         }

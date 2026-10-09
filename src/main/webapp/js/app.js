@@ -5,6 +5,9 @@ function toast(msg) {
   setTimeout(() => t.remove(), 2600);
 }
 
+// 뒤로 가기로 브라우저가 저장해 둔 화면을 꺼내면 새로 받아 온다 (알림 읽음 표시 등 최신 상태)
+addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
+
 document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) lucide.createIcons();
 

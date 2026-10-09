@@ -1,11 +1,11 @@
-<%-- 알림 한 줄. 변수 n = notification 행 --%>
-<a class="noti ${n.is_read ? '' : 'unread'}" href="${ctx}/notifications/open?id=${n.id}">
+<%-- 알림 한 줄. 변수 n = Notification --%>
+<a class="noti ${n.read ? '' : 'unread'}" href="${ctx}/notifications/open?id=${n.id}">
     <span class="icon-tile sm">
         <i data-lucide="${n.type == 'APPROVED' ? 'shield-check' : n.type == 'NOTICE' ? 'file-text' : 'calendar'}"></i>
     </span>
     <span class="grow">
         <b>${n.type == 'APPROVED' ? '가입이 승인되었습니다' : n.type == 'NOTICE' ? '새 공지가 등록되었습니다' : '새 일정이 등록되었습니다'}</b>
         <span class="meta-2">${fn:escapeXml(n.message)}</span>
-        <small class="meta"><t:ago value="${n.created_at}" /></small>
+        <small class="meta"><t:ago value="${n.createdAt}" /></small>
     </span>
 </a>
