@@ -9,14 +9,26 @@
 <form method="post" action="${ctx}/admin/club" enctype="multipart/form-data">
     <c:if test="${not empty error}"><p class="alert">${fn:escapeXml(error)}</p></c:if>
     <div class="field">
-        <span>대표 이미지</span>
-        <div class="drop square" id="clubPreview">
+        <span>배경 이미지</span>
+        <div class="drop square" id="bannerPreview">
             <c:choose>
-                <c:when test="${not empty club.imagePath}"><img src="${fn:escapeXml(club.imagePath)}" alt=""></c:when>
-                <c:otherwise><span><i data-lucide="image"></i><br>대표 이미지를 올려 주세요</span></c:otherwise>
+                <c:when test="${not empty club.bannerPath}"><img src="${fn:escapeXml(club.bannerPath)}" alt=""></c:when>
+                <c:otherwise><span><i data-lucide="image"></i><br>동아리 소개 화면 위쪽에 넓게 보여요</span></c:otherwise>
             </c:choose>
         </div>
-        <label class="file-btn"><i data-lucide="upload"></i>이미지 선택
+        <label class="file-btn"><i data-lucide="upload"></i>배경 이미지 선택
+            <input type="file" name="banner" accept=".jpg,.jpeg,.png" data-preview="bannerPreview">
+        </label>
+    </div>
+    <div class="field">
+        <span>대표(프로필) 이미지</span>
+        <div class="drop" id="clubPreview">
+            <c:choose>
+                <c:when test="${not empty club.imagePath}"><img src="${fn:escapeXml(club.imagePath)}" alt=""></c:when>
+                <c:otherwise><span><i data-lucide="camera"></i><br>사이드바 카드와<br>소개 화면 가운데</span></c:otherwise>
+            </c:choose>
+        </div>
+        <label class="file-btn"><i data-lucide="upload"></i>프로필 이미지 선택
             <input type="file" name="image" accept=".jpg,.jpeg,.png" data-preview="clubPreview">
         </label>
         <p class="hint">JPG, PNG 파일을 올릴 수 있어요.</p>

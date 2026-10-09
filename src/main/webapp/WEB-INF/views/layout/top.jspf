@@ -12,7 +12,7 @@
         <span><b>모아</b><small>한곳에 모이는 우리</small></span>
     </a>
 
-    <a class="club-card" href="${ctx}/me">
+    <a class="club-card" href="${ctx}/club">
         <t:avatar name="${club.name}" src="${club.imagePath}" size="md" ring="true" />
         <span><b class="ellipsis">${fn:escapeXml(club.name)}</b><small>${fn:escapeXml(club.school)}</small></span>
         <i data-lucide="chevron-right"></i>

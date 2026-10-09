@@ -1,0 +1,16 @@
+/* 동아리 소개: 커버 안에 아바타 · 이름 · 학교 */
+.club-cover {
+  position: relative; display: flex; align-items: center; justify-content: center; min-height: 220px; padding: 24px;
+  overflow: hidden; border-radius: 22px; color: #fff;
+  background: linear-gradient(135deg, #7b5cf0, #5537cd); box-shadow: 0 18px 36px rgba(92, 62, 214, .25);
+}
+.club-cover::after {  /* 대표 이미지 위에서도 흰 글씨가 읽히도록 아래쪽을 어둡게 */
+  content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 40%, rgba(20, 10, 50, .45));
+}
+.club-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.club-head { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.club-head .row { justify-content: center; }
+.club-head .avatar { box-shadow: 0 0 0 3px rgba(255, 255, 255, .7); }
+.club-head h2 { font-size: 26px; letter-spacing: -.02em; }
+.club-head p { margin-top: 2px; font-size: 13px; opacity: .9; }
+.club-head svg.lucide { width: 14px; height: 14px; }
