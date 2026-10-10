@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import kr.ac.dongeui.club.domain.member.dto.NaverProfile;
+import kr.ac.dongeui.club.domain.member.dto.OAuthProfile;
 import kr.ac.dongeui.club.domain.member.repository.DepartmentRepository;
 import kr.ac.dongeui.club.domain.member.service.MemberService;
 
@@ -32,10 +32,11 @@ public class SignupController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        NaverProfile profile = (NaverProfile) session.getAttribute("naverProfile");
+        OAuthProfile profile = (OAuthProfile) session.getAttribute("oauthProfile");
         try {
-            session.setAttribute("me", memberService.signup(profile, req.getParameter("studentNo"), req.getParameter("department")));
-            session.removeAttribute("naverProfile");
+            session.setAttribute("me", memberService.signup(profile, req.getParameter("studentNo"), req.getParameter("department"),
+                    req.getParameter("name"), req.getParameter("phone")));
+            session.removeAttribute("oauthProfile");
             resp.sendRedirect(req.getContextPath() + "/pending");
         } catch (IllegalArgumentException e) {
             showForm(req, resp, e.getMessage());
@@ -50,7 +51,7 @@ public class SignupController extends HttpServlet {
         } catch (SQLException e) {
             throw new ServletException(e);
         }
-        req.setAttribute("naver", req.getSession().getAttribute("naverProfile"));
+        req.setAttribute("profile", req.getSession().getAttribute("oauthProfile"));
         req.setAttribute("error", error);
         req.getRequestDispatcher("/WEB-INF/views/auth/signup.jsp").forward(req, resp);
     }

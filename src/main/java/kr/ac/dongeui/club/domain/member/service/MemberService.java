@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-import kr.ac.dongeui.club.domain.member.dto.NaverProfile;
+import kr.ac.dongeui.club.domain.member.dto.OAuthProfile;
 import kr.ac.dongeui.club.domain.member.entity.Member;
 import kr.ac.dongeui.club.domain.member.repository.DepartmentRepository;
 import kr.ac.dongeui.club.domain.member.repository.MemberRepository;
@@ -20,8 +20,8 @@ public class MemberService {
     private final NotificationRepository notificationRepository = new NotificationRepository();
     private final LocalFileStorageService fileStorage = new LocalFileStorageService();
 
-    public Member findByNaverId(String naverId) throws SQLException {
-        return memberRepository.findByNaverId(naverId);
+    public Member findByOAuth(OAuthProfile profile) throws SQLException {
+        return memberRepository.findByOAuth(profile.getProvider(), profile.getId());
     }
 
     public Member findByStudentNo(String studentNo) throws SQLException {
@@ -61,9 +61,19 @@ public class MemberService {
 
     /**
      * 가입 신청을 가입 대기 상태로 저장하고 저장된 회원을 돌려준다.
+     * 이름 · 전화번호는 네이버면 네이버 정보, 카카오면 화면에서 입력한 값을 쓴다.
      * 입력이 잘못되면 화면에 보여 줄 문구로 IllegalArgumentException 을 던진다.
      */
-    public Member signup(NaverProfile profile, String studentNo, String departmentName) throws SQLException {
+    public Member signup(OAuthProfile profile, String studentNo, String departmentName, String nameInput, String phoneInput) throws SQLException {
+        String name = profile.getName(), phone = profile.getPhone();
+        if (profile.getProvider() == OAuthProfile.Provider.KAKAO) {
+            name = nameInput == null ? "" : nameInput.strip();
+            if (name.length() < 2 || name.length() > 4) throw new IllegalArgumentException("이름은 2~4글자로 입력해 주세요.");
+            String digits = phoneInput == null ? "" : phoneInput.replaceAll("\\D", "");
+            if (!digits.matches("01\\d{8,9}")) throw new IllegalArgumentException("전화번호를 010-0000-0000 형식으로 입력해 주세요.");
+            phone = digits.replaceFirst("(\\d{3})(\\d{3,4})(\\d{4})", "$1-$2-$3");  // 네이버와 같은 모양으로 저장
+        }
+
         studentNo = studentNo == null ? "" : studentNo.trim();
         if (!studentNo.matches("\\d{8}")) throw new IllegalArgumentException("학번은 숫자 8자리로 입력해 주세요.");
 
@@ -71,10 +81,10 @@ public class MemberService {
         if (departmentId == null) throw new IllegalArgumentException("학과는 목록에서 검색해 선택해 주세요.");
 
         if (memberRepository.findByStudentNo(studentNo) != null) throw new IllegalArgumentException("이미 등록된 학번입니다.");
-        if (memberRepository.findByNaverId(profile.getId()) != null) throw new IllegalArgumentException("이미 가입 신청한 네이버 계정입니다.");
+        if (findByOAuth(profile) != null) throw new IllegalArgumentException("이미 가입 신청한 " + profile.getProvider().getLabel() + " 계정입니다.");
 
         try {
-            memberRepository.insertPending(studentNo, profile.getId(), profile.getName(), departmentId, profile.getPhone());
+            memberRepository.insertPending(studentNo, profile.getProvider(), profile.getId(), name, departmentId, phone);
         } catch (SQLIntegrityConstraintViolationException e) {  // 위 확인과 저장 사이에 같은 학번이 먼저 들어온 경우
             throw new IllegalArgumentException("이미 등록된 학번입니다.");
         }

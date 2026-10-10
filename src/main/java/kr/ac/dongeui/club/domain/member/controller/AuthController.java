@@ -8,27 +8,30 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.UUID;
-import kr.ac.dongeui.club.domain.member.dto.NaverProfile;
+import kr.ac.dongeui.club.domain.member.dto.OAuthProfile;
 import kr.ac.dongeui.club.domain.member.entity.Member;
 import kr.ac.dongeui.club.domain.member.service.MemberService;
+import kr.ac.dongeui.club.global.security.KakaoOAuthClient;
 import kr.ac.dongeui.club.global.security.NaverOAuthClient;
 
-/** 네이버 로그인 · 로그아웃 (SFR-01, 03) */
-@WebServlet({"/login", "/login/naver", "/login/naver/callback", "/logout"})
+/** 소셜 로그인(네이버 · 카카오) · 로그아웃 (SFR-01, 03) */
+@WebServlet({"/login", "/login/naver", "/login/naver/callback", "/login/kakao", "/login/kakao/callback", "/logout"})
 public class AuthController extends HttpServlet {
 
     private final MemberService memberService = new MemberService();
     private final NaverOAuthClient naver = new NaverOAuthClient();
+    private final KakaoOAuthClient kakao = new KakaoOAuthClient();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         switch (req.getServletPath()) {
-            case "/login/naver" -> {
+            case "/login/naver", "/login/kakao" -> {
                 String state = UUID.randomUUID().toString();
                 req.getSession().setAttribute("oauthState", state);
-                resp.sendRedirect(naver.authorizeUrl(state));
+                resp.sendRedirect(req.getServletPath().equals("/login/naver") ? naver.authorizeUrl(state) : kakao.authorizeUrl(state));
             }
-            case "/login/naver/callback" -> callback(req, resp);
+            case "/login/naver/callback" -> callback(req, resp, OAuthProfile.Provider.NAVER);
+            case "/login/kakao/callback" -> callback(req, resp, OAuthProfile.Provider.KAKAO);
             case "/logout" -> {
                 req.getSession().invalidate();
                 resp.sendRedirect(req.getContextPath() + "/login");
@@ -42,24 +45,25 @@ public class AuthController extends HttpServlet {
         }
     }
 
-    private void callback(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void callback(HttpServletRequest req, HttpServletResponse resp, OAuthProfile.Provider provider) throws IOException {
         HttpSession session = req.getSession();
         Object expected = session.getAttribute("oauthState");
         session.removeAttribute("oauthState");
         String state = req.getParameter("state"), code = req.getParameter("code");
         if (code == null || expected == null || !expected.equals(state)) {  // 취소 또는 요청 위조
-            fail(req, resp, "네이버 로그인이 취소되었거나 올바르지 않은 요청이에요. 다시 시도해 주세요.");
+            fail(req, resp, provider.getLabel() + " 로그인이 취소되었거나 올바르지 않은 요청이에요. 다시 시도해 주세요.");
             return;
         }
 
-        NaverProfile profile;
+        OAuthProfile profile;
         Member member;
         try {
-            profile = naver.fetchProfile(code, state);
-            member = memberService.findByNaverId(profile.getId());
+            profile = provider == OAuthProfile.Provider.NAVER ? naver.fetchProfile(code, state) : kakao.fetchProfile(code);
+            member = memberService.findByOAuth(profile);
         } catch (Exception e) {  // 외부 API · DB 장애는 로그인 화면 안내로 끝낸다 (NFR-18)
-            log("네이버 로그인 실패", e);
-            fail(req, resp, "네이버 로그인에 실패했어요. 잠시 후 다시 시도해 주세요.");
+            if (e instanceof InterruptedException) Thread.currentThread().interrupt();
+            log(provider.getLabel() + " 로그인 실패", e);
+            fail(req, resp, provider.getLabel() + " 로그인에 실패했어요. 잠시 후 다시 시도해 주세요.");
             return;
         }
 
@@ -69,7 +73,7 @@ public class AuthController extends HttpServlet {
         }
         req.changeSessionId();  // 로그인 직후 세션 ID 교체 (세션 고정 공격 방지)
         if (member == null) {   // 처음 온 사용자 → 가입 신청
-            session.setAttribute("naverProfile", profile);
+            session.setAttribute("oauthProfile", profile);
             resp.sendRedirect(req.getContextPath() + "/signup");
         } else {                // 가입 대기면 AuthFilter 가 승인 대기 화면으로 보낸다
             session.setAttribute("me", member);

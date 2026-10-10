@@ -10,7 +10,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import kr.ac.dongeui.club.domain.member.dto.NaverProfile;
+import kr.ac.dongeui.club.domain.member.dto.OAuthProfile;
 import kr.ac.dongeui.club.global.config.Config;
 
 /** 네이버 로그인 (OAuth 2.0). Client Secret 은 서버 설정 파일에만 있고 브라우저로 보내지 않는다 (NFR-09). */
@@ -27,7 +27,7 @@ public class NaverOAuthClient {
     }
 
     /** 콜백으로 받은 code 로 토큰을 받고, 그 토큰으로 회원 프로필(고유 ID · 이름 · 휴대전화)을 가져온다. */
-    public NaverProfile fetchProfile(String code, String state) throws IOException, InterruptedException {
+    public OAuthProfile fetchProfile(String code, String state) throws IOException, InterruptedException {
         JsonObject token = getJson("https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
                 + "&client_id=" + enc(Config.get("naver.client.id"))
                 + "&client_secret=" + enc(Config.get("naver.client.secret"))
@@ -37,7 +37,7 @@ public class NaverOAuthClient {
         JsonObject me = getJson("https://openapi.naver.com/v1/nid/me", token.get("access_token").getAsString());
         if (!"00".equals(me.get("resultcode").getAsString())) throw new IOException("네이버 프로필 조회 실패: " + me);
         JsonObject p = me.getAsJsonObject("response");
-        return new NaverProfile(p.get("id").getAsString(), str(p, "name"), str(p, "mobile"));
+        return new OAuthProfile(OAuthProfile.Provider.NAVER, p.get("id").getAsString(), str(p, "name"), str(p, "mobile"));
     }
 
     private static JsonObject getJson(String url, String bearer) throws IOException, InterruptedException {

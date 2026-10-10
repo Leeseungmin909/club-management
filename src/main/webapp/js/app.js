@@ -47,10 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', e =>
     document.querySelectorAll('details.bell[open]').forEach(d => { if (!d.contains(e.target)) d.removeAttribute('open'); }));
 
-  // data-ga="이벤트": 링크는 누를 때, 폼은 제출할 때 보낸다 (확인 창에서 취소하면 안 보냄). 누른 버튼의 value 는 status 로
+  // data-ga="이벤트": 링크는 누를 때(data-ga-method 는 method 로), 폼은 제출할 때 보낸다 (확인 창에서 취소하면 안 보냄). 누른 버튼의 value 는 status 로
   document.addEventListener('click', e => {
     const a = e.target.closest('a[data-ga]');
-    if (a) ga(a.dataset.ga);
+    if (a) ga(a.dataset.ga, a.dataset.gaMethod ? { method: a.dataset.gaMethod } : {});
   });
   document.addEventListener('submit', e => {
     const f = e.target;

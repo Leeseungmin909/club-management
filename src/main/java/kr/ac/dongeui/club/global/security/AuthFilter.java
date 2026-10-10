@@ -23,7 +23,7 @@ import kr.ac.dongeui.club.domain.notification.service.NotificationService;
 @WebFilter(urlPatterns = "/*", asyncSupported = true)  // 채팅 SSE(/chat/stream)가 비동기라 필터도 허용해야 한다
 public class AuthFilter extends HttpFilter {
 
-    private static final Set<String> PUBLIC = Set.of("/login", "/login/naver", "/login/naver/callback", "/logout");
+    private static final Set<String> PUBLIC = Set.of("/login", "/login/naver", "/login/naver/callback", "/login/kakao", "/login/kakao/callback", "/logout");
 
     private final MemberService memberService = new MemberService();
     private final ClubRepository clubRepository = new ClubRepository();
@@ -43,7 +43,7 @@ public class AuthFilter extends HttpFilter {
         HttpSession session = req.getSession();
         Member me = (Member) session.getAttribute("me");
         if (me == null) {
-            if (path.equals("/signup") && session.getAttribute("naverProfile") != null) chain.doFilter(req, resp);
+            if (path.equals("/signup") && session.getAttribute("oauthProfile") != null) chain.doFilter(req, resp);
             else redirect(req, resp, "/login");
             return;
         }

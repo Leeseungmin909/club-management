@@ -24,10 +24,11 @@ CREATE TABLE `department` (
 
 CREATE TABLE `member` (
   `student_no` varchar(20) PRIMARY KEY COMMENT '학번 (숫자 8자리)',
-  `naver_id` varchar(100) UNIQUE NOT NULL COMMENT '네이버 고유 ID (로그인할 때 회원 찾기용)',
-  `name` varchar(30) NOT NULL COMMENT '이름 (네이버)',
+  `naver_id` varchar(100) UNIQUE COMMENT '네이버 고유 ID (네이버로 가입한 회원, 로그인할 때 회원 찾기용)',
+  `kakao_id` varchar(100) UNIQUE COMMENT '카카오 고유 ID (카카오로 가입한 회원, 로그인할 때 회원 찾기용)',
+  `name` varchar(30) NOT NULL COMMENT '이름 (네이버 또는 가입 시 입력)',
   `department_id` int NOT NULL COMMENT '학과 번호 (가입 시 검색 후 선택)',
-  `phone` varchar(20) COMMENT '전화번호 (네이버), 탈퇴 시 NULL',
+  `phone` varchar(20) COMMENT '전화번호 (네이버 또는 가입 시 입력), 탈퇴 시 NULL',
   `profile_image` varchar(255) COMMENT '프로필 이미지 경로',
   `role` ENUM ('ADMIN', 'MEMBER') NOT NULL DEFAULT 'MEMBER',
   `status` ENUM ('PENDING', 'ACTIVE', 'WITHDRAWN', 'KICKED') NOT NULL DEFAULT 'PENDING',

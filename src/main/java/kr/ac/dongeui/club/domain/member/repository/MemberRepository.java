@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import kr.ac.dongeui.club.domain.member.dto.OAuthProfile;
 import kr.ac.dongeui.club.domain.member.entity.Member;
 import kr.ac.dongeui.club.global.config.Db;
 
@@ -17,8 +18,9 @@ public class MemberRepository {
             FROM member m JOIN department d ON d.id = m.department_id
             """;
 
-    public Member findByNaverId(String naverId) throws SQLException {
-        return findOne(SELECT + "WHERE m.naver_id = ?", naverId);
+    /** 소셜 로그인 고유 ID 로 회원 찾기 (네이버는 naver_id, 카카오는 kakao_id) */
+    public Member findByOAuth(OAuthProfile.Provider provider, String id) throws SQLException {
+        return findOne(SELECT + "WHERE m." + column(provider) + " = ?", id);
     }
 
     public Member findByStudentNo(String studentNo) throws SQLException {
@@ -63,20 +65,22 @@ public class MemberRepository {
         return update("DELETE FROM member WHERE student_no = ? AND status = 'PENDING'", studentNo);
     }
 
-    /** 가입 신청: 가입 대기(PENDING) 상태로 저장 */
-    public void insertPending(String studentNo, String naverId, String name, int departmentId, String phone) throws SQLException {
+    /** 가입 신청: 가입 대기(PENDING) 상태로 저장. 로그인한 서비스의 ID 칸에만 값이 들어간다 */
+    public void insertPending(String studentNo, OAuthProfile.Provider provider, String oauthId, String name, int departmentId, String phone) throws SQLException {
         try (Connection c = Db.get();
-             PreparedStatement ps = c.prepareStatement("""
-                     INSERT INTO member (student_no, naver_id, name, department_id, phone, requested_at)
-                     VALUES (?, ?, ?, ?, ?, NOW())
-                     """)) {
+             PreparedStatement ps = c.prepareStatement(
+                     "INSERT INTO member (student_no, " + column(provider) + ", name, department_id, phone, requested_at) VALUES (?, ?, ?, ?, ?, NOW())")) {
             ps.setString(1, studentNo);
-            ps.setString(2, naverId);
+            ps.setString(2, oauthId);
             ps.setString(3, name);
             ps.setInt(4, departmentId);
             ps.setString(5, phone);
             ps.executeUpdate();
         }
+    }
+
+    private static String column(OAuthProfile.Provider provider) {
+        return provider == OAuthProfile.Provider.NAVER ? "naver_id" : "kakao_id";
     }
 
     private static boolean update(String sql, String param) throws SQLException {
