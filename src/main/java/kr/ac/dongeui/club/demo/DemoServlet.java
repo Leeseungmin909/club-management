@@ -1,6 +1,5 @@
 package kr.ac.dongeui.club.demo;
 
-import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -128,18 +126,6 @@ public class DemoServlet extends HttpServlet {
                 view = "me";
             }
             case "/deleted" -> { deleted(req, "/", null); view = "message"; }
-            case "/admin/dashboard" -> {
-                List<String> labels = new ArrayList<>();
-                for (int i = 6; i >= 0; i--) labels.add(YearMonth.from(NOW).minusMonths(i).getMonthValue() + "월");
-                int[] joined = {4, 3, 5, 6, 8, 4, 3}, left = {0, 1, 0, 1, 2, 1, 2}, total = new int[7];
-                for (int i = 0, sum = 10; i < 7; i++) total[i] = sum += joined[i] - left[i];
-                Map<String, Object> chart = row("labels", labels, "joined", joined, "left", left, "total", total);
-                req.setAttribute("chart", chart);
-                req.setAttribute("chartJson", new Gson().toJson(chart));
-                req.setAttribute("stats", row("total", total[6], "joinedThisMonth", joined[6], "avgRate", 78, "leftThisMonth", left[6]));
-                req.setAttribute("pendingCount", 3);
-                view = "admin/dashboard";
-            }
             case "/admin/members" -> { req.setAttribute("members", MEMBERS); view = "admin/members"; }
             case "/admin/club" -> view = "admin/club";
             case "/admin/notices/write" -> view = "notice/form";

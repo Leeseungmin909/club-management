@@ -1,4 +1,4 @@
-<%-- 관리자 대시보드 (SFR-26): 월별 신규 가입·탈퇴(막대), 총 인원 누계(꺾은선), 전체 회원 수, 평균 출석률 --%>
+<%-- 관리자 대시보드 (SFR-26): 올해 1~12월 신규 가입·탈퇴(막대), 총 인원 누계(꺾은선), 전체 회원 수, 평균 출석률 --%>
 <c:set var="pageCss" value="admin" />
 <c:set var="pageJs" value="dashboard" />
 <c:set var="nav" value="dashboard" />
@@ -16,24 +16,24 @@
 <div class="stats">
     <div class="stat">
         <span class="icon-tile"><i data-lucide="users"></i></span>
-        <div><small>전체 회원</small><b>${stats.total}<small>명</small></b><span class="up" style="display:block">+${stats.joinedThisMonth} 이번 달</span></div>
+        <div><small>전체 회원</small><b>${dash.members}<small>명</small></b><span class="up" style="display:block">+${dash.joinedThisMonth} 이번 달</span></div>
     </div>
     <div class="stat">
         <span class="icon-tile green"><i data-lucide="check"></i></span>
-        <div><small>평균 출석률</small><b>${stats.avgRate}<small>%</small></b><span class="meta">활동 중인 회원 평균</span></div>
+        <div><small>평균 출석률</small><b><c:choose><c:when test="${empty dash.avgRate}">-</c:when><c:otherwise>${dash.avgRate}<small>%</small></c:otherwise></c:choose></b><span class="meta">${empty dash.avgRate ? '지난 일정이 아직 없어요' : '활동 중인 회원 평균'}</span></div>
     </div>
     <div class="stat">
         <span class="icon-tile red"><i data-lucide="log-out"></i></span>
-        <div><small>이번 달 탈퇴자</small><b>${stats.leftThisMonth}<small>명</small></b><span class="down" style="display:block">탈퇴 · 추방 포함</span></div>
+        <div><small>이번 달 탈퇴자</small><b>${dash.leftThisMonth}<small>명</small></b><span class="down" style="display:block">탈퇴 · 추방 포함</span></div>
     </div>
 </div>
 
 <div class="chart-card">
     <header>
         <div><p class="meta">회원 성장</p><h4>월별 가입·탈퇴 및 총 인원</h4></div>
-        <span class="badge">최근 ${fn:length(chart.labels)}개월</span>
+        <span class="badge">${dash.year}년</span>
     </header>
-    <div class="chart-box"><canvas id="growth" data-chart="${fn:escapeXml(chartJson)}" aria-label="월별 가입·탈퇴 및 총 인원 그래프"></canvas></div>
+    <div class="chart-box"><canvas id="growth" data-chart="${fn:escapeXml(dashJson)}" aria-label="월별 가입·탈퇴 및 총 인원 그래프"></canvas></div>
 </div>
 
 <div class="sec-head">
