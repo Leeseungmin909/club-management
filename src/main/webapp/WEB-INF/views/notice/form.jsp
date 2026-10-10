@@ -8,7 +8,7 @@
 <c:set var="panelClass" value="narrow" />
 <%@ include file="/WEB-INF/views/layout/top.jspf" %>
 
-<form method="post" action="${ctx}/admin/notices/${empty notice ? 'write' : 'edit'}">
+<form method="post" action="${ctx}/admin/notices/${empty notice ? 'write' : 'edit'}" ${empty notice ? 'data-ga="notice_create"' : ''}>
     <c:if test="${not empty notice}"><input type="hidden" name="id" value="${notice.id}"></c:if>
     <c:if test="${not empty error}"><p class="alert">${fn:escapeXml(error)}</p></c:if>
     <label class="field">

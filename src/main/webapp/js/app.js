@@ -1,9 +1,12 @@
-// 모아 공통 스크립트: 아이콘, 모바일 메뉴, 모달, 확인 창, 이미지 미리보기, 알림 드롭다운 닫기
+// 모아 공통 스크립트: 아이콘, 모바일 메뉴, 모달, 확인 창, 이미지 미리보기, 알림 드롭다운 닫기, GA4 이벤트
 function toast(msg) {
   const t = Object.assign(document.createElement('div'), { className: 'toast', textContent: msg });
   document.body.append(t);
   setTimeout(() => t.remove(), 2600);
 }
+
+// GA4 이벤트 (SFR-25). 측정 ID 가 없으면(gtag 없음) 아무것도 안 한다. 개인정보 · 내용은 보내지 않는다
+function ga(name, params) { if (window.gtag) gtag('event', name, params); }
 
 // 뒤로 가기로 브라우저가 저장해 둔 화면을 꺼내면 새로 받아 온다 (알림 읽음 표시 등 최신 상태)
 addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
@@ -43,4 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('click', e =>
     document.querySelectorAll('details.bell[open]').forEach(d => { if (!d.contains(e.target)) d.removeAttribute('open'); }));
+
+  // data-ga="이벤트": 링크는 누를 때, 폼은 제출할 때 보낸다 (확인 창에서 취소하면 안 보냄). 누른 버튼의 value 는 status 로
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[data-ga]');
+    if (a) ga(a.dataset.ga);
+  });
+  document.addEventListener('submit', e => {
+    const f = e.target;
+    if (f.dataset.ga && !e.defaultPrevented) ga(f.dataset.ga, e.submitter?.value ? { status: e.submitter.value } : {});
+  });
 });

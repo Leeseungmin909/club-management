@@ -17,7 +17,7 @@
         <h2>동아리 가입 신청</h2>
         <p class="lead" style="margin-bottom:22px">학번과 학과를 입력하면 가입 신청이 완료돼요.<br>관리자가 승인하면 모든 기능을 이용할 수 있어요.</p>
 
-        <form class="form-card" method="post" action="${ctx}/signup">
+        <form class="form-card" method="post" action="${ctx}/signup" data-ga="sign_up">
             <c:if test="${not empty error}"><p class="alert">${fn:escapeXml(error)}</p></c:if>
             <div class="grid-2">
                 <label class="field"><span>이름</span><input class="input" value="${fn:escapeXml(naver.name)}" readonly></label>

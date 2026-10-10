@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error(res.status);
       box.value = await res.text();
       hint.textContent = '문장을 자연스럽게 정리했어요';
-      if (window.gtag) gtag('event', 'ai_polish');
+      ga('ai_polish');
     } catch {
       toast('AI 다듬기에 실패했어요. 초안은 그대로 유지돼요.');
     } finally {

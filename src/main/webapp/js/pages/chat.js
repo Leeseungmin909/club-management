@@ -123,7 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (!text.value.trim()) return;
-    if (await post('/chat/messages', { content: text.value })) text.value = '';
+    if (await post('/chat/messages', { content: text.value })) {
+      text.value = '';
+      ga('chat_send', { type: 'text' });
+    }
     text.focus();
   });
 
@@ -185,7 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('uploadBar').style.width = '0';
       document.getElementById('uploadPercent').textContent = '0%';
       file.value = '';
-      if (xhr.status !== 204) toast(xhr.status === 400 || xhr.status === 413 ? xhr.responseText || '파일을 올리지 못했어요.' : '파일을 올리지 못했어요.');
+      if (xhr.status === 204) ga('chat_send', { type: f.type.startsWith('video/') ? 'video' : 'image' });
+      else toast(xhr.status === 400 || xhr.status === 413 ? xhr.responseText || '파일을 올리지 못했어요.' : '파일을 올리지 못했어요.');
     });
     xhr.send(data);
   }

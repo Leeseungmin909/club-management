@@ -27,7 +27,7 @@
 <c:if test="${not empty s.content}"><div class="content">${fn:escapeXml(s.content)}</div></c:if>
 
 <h3 style="font-size:16px;margin-top:8px">참석 여부</h3>
-<form class="rsvp" method="post" action="${ctx}/schedules/attend">
+<form class="rsvp" method="post" action="${ctx}/schedules/attend" data-ga="attendance_check">
     <input type="hidden" name="scheduleId" value="${s.id}">
     <button class="yes ${myStatus == 'ATTEND' ? 'on' : ''}" name="status" value="ATTEND" ${s.started ? 'disabled' : ''}>참석할게요</button>
     <button class="no ${myStatus == 'ABSENT' ? 'on' : ''}" name="status" value="ABSENT" ${s.started ? 'disabled' : ''}>참석이 어려워요</button>

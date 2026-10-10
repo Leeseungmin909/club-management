@@ -7,7 +7,7 @@
 <c:set var="panelClass" value="narrow" />
 <%@ include file="/WEB-INF/views/layout/top.jspf" %>
 
-<form method="post" action="${ctx}/admin/schedules/${empty s ? 'write' : 'edit'}">
+<form method="post" action="${ctx}/admin/schedules/${empty s ? 'write' : 'edit'}" ${empty s ? 'data-ga="schedule_create"' : ''}>
     <c:if test="${not empty s}"><input type="hidden" name="id" value="${s.id}"></c:if>
     <c:if test="${not empty error}"><p class="alert">${fn:escapeXml(error)}</p></c:if>
     <label class="field">
