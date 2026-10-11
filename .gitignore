@@ -5,7 +5,9 @@ config.properties
 *.key
 .env
 .env.*
-**/credentials*
+*credentials*
+*accessKeys*.csv
+rootkey.csv
 .aws/
 
 # 업로드 파일

@@ -1,0 +1,40 @@
+/* 일정: 주간 바 · 목록 · 지도 · 출석 */
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 24px; padding: 8px; border-radius: 16px; background: #f6f6fa; }
+.week div { padding: 8px 0; border-radius: 12px; text-align: center; font-size: 11px; color: var(--muted); }
+.week b { display: block; font-size: 14px; color: var(--text); }
+.week .on { background: var(--primary); color: #fff; box-shadow: 0 6px 14px rgba(108, 78, 227, .3); }
+.week .on b { color: #fff; }
+.week .has b::after { content: ""; display: block; width: 4px; height: 4px; margin: 3px auto 0; border-radius: 50%; background: currentColor; }
+.datebox {
+  display: grid; place-content: center; width: 52px; height: 56px; flex: none; text-align: center;
+  border-radius: 12px; background: var(--primary-50); color: var(--primary);
+}
+.datebox b { font-size: 20px; line-height: 1.1; }
+.datebox small { font-size: 10px; }
+.sched { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); }
+a.sched:hover { background: var(--soft); }
+.sched .title-sm { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.sched .meta { display: flex; align-items: center; gap: 4px; }
+.sched .meta svg.lucide { width: 12px; height: 12px; }
+.sched.past { opacity: .7; }
+.sched.past .datebox { background: var(--bg); color: var(--muted); }
+.divider { display: flex; align-items: center; gap: 10px; margin: 24px 0 12px; font-size: 12px; color: var(--muted); }
+.divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.map {
+  display: grid; place-items: center; height: 220px; margin: 12px 0; overflow: hidden; border-radius: var(--radius);
+  background: repeating-linear-gradient(45deg, #f1f2f6 0 12px, #eceef3 12px 24px); color: var(--muted); font-size: 13px; text-align: center;
+}
+.rsvp { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0 10px; }
+.rsvp button { height: 50px; border: 1px solid var(--line); border-radius: 14px; background: #fff; font-weight: 600; cursor: pointer; }
+.rsvp .yes.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.rsvp .no.on { background: var(--danger-50); border-color: #f5c6c8; color: var(--danger); }
+.rsvp button:disabled { opacity: .5; cursor: default; }
+.counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.count { padding: 14px 10px; border: 1px solid var(--line); border-radius: 14px; text-align: center; }
+.count b { display: block; font-size: 20px; }
+.count summary { list-style: none; cursor: pointer; }
+.count summary::-webkit-details-marker { display: none; }
+.count summary small { color: var(--primary); font-size: 11px; }
+.count ul { margin-top: 10px; text-align: left; }
+.count li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; }

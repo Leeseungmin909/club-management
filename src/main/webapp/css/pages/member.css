@@ -1,0 +1,19 @@
+/* 내 정보 */
+.profile-card { padding: 24px 20px 18px; border: 1px solid var(--line); border-radius: 20px; text-align: center; box-shadow: var(--shadow); }
+.avatar-wrap { position: relative; display: inline-block; }
+.cam {
+  position: absolute; right: -2px; bottom: -2px; display: grid; place-items: center; width: 30px; height: 30px;
+  border: 2px solid #fff; border-radius: 50%; background: var(--primary); color: #fff; cursor: pointer;
+}
+.cam svg.lucide { width: 14px; height: 14px; }
+.profile-card .link-btn { display: block; margin: 8px auto 10px; }
+.profile-card h2 { display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 21px; }
+.info3 { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.info3 > div + div { border-left: 1px solid var(--line); }
+.info3 small { display: block; font-size: 11px; color: var(--muted); }
+.info3 b { font-size: 13px; }
+.rate { margin-top: 14px; padding: 18px; border-radius: 18px; background: var(--primary-50); }
+.rate .big { font-size: 28px; font-weight: 800; color: var(--primary); }
+.rate .big small { font-size: 14px; }
+.bar { height: 8px; margin: 10px 0 8px; overflow: hidden; border-radius: 4px; background: #fff; }
+.bar i { display: block; height: 100%; border-radius: 4px; background: var(--primary); }
