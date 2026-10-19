@@ -13,17 +13,17 @@
     <c:if test="${not empty error}"><p class="alert">${fn:escapeXml(error)}</p></c:if>
     <label class="field">
         <span>제목</span>
-        <input class="input" name="title" value="${fn:escapeXml(notice.title)}" maxlength="100" required placeholder="공지 제목">
+        <input class="input" name="title" value="${fn:escapeXml(not empty notice ? notice.title : param.title)}" maxlength="100" required placeholder="공지 제목">
     </label>
     <label class="field">
         <span>내용</span>
-        <textarea class="input" id="content" name="content" rows="8" required placeholder="공지 내용을 입력하세요">${fn:escapeXml(notice.content)}</textarea>
+        <textarea class="input" id="content" name="content" rows="8" required placeholder="공지 내용을 입력하세요">${fn:escapeXml(not empty notice ? notice.content : param.content)}</textarea>
     </label>
     <button class="ai-btn" type="button" id="aiBtn" data-url="${ctx}/admin/notices/ai">
         <i data-lucide="sparkles"></i><span id="aiLabel">AI로 다듬기</span><small id="aiHint">초안을 더 명확하고 친근하게</small>
     </button>
     <label class="check" style="margin-bottom:28px">
-        <input type="checkbox" name="pinned" value="true" ${notice.is_pinned ? 'checked' : ''}>상단에 중요 공지로 고정
+        <input type="checkbox" name="pinned" value="true" ${(not empty notice ? notice.is_pinned : param.pinned == 'true') ? 'checked' : ''}>상단에 중요 공지로 고정
     </label>
     <div class="btns">
         <a class="btn" href="${back}">취소</a>

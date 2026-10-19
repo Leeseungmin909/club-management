@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
+import kr.ac.dongeui.club.domain.notice.service.NoticeService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,9 +23,11 @@ import java.util.Objects;
  * 로그인 · 가입 · 권한 검사는 실제 코드(AuthController, SignupController, AuthFilter)가 처리한다.
  */
 @WebServlet(urlPatterns = {"", "/deleted",
-        "/notices", "/notices/*", "/schedules", "/schedules/*", "/members", "/me", "/me/*",
+        "/schedules", "/schedules/*", "/members", "/me", "/me/*",
         "/admin/*"})
 public class DemoServlet extends HttpServlet {
+
+    private final NoticeService noticeService = new NoticeService();
 
     private static final LocalDateTime NOW = LocalDateTime.now().withSecond(0).withNano(0);
     private static final LocalDateTime TODAY_AT = NOW.toLocalDate().atStartOfDay();
@@ -36,20 +40,6 @@ public class DemoServlet extends HttpServlet {
             member("20231005", "정하은", "영화학과", "010-1234-0005", "MEMBER", 90),
             member("20231006", "최유진", "신문방송학과", "010-1234-0006", "MEMBER", 40),
             member("20241007", "한지민", "인공지능학과", "010-1234-0007", "MEMBER", 12));
-
-    private static final List<Map<String, Object>> NOTICES = List.of(
-            row("id", 1, "title", "10월 정기 출사 안내", "is_pinned", true, "view_count", 128, "writer_name", "김도윤",
-                    "created_at", NOW.minusDays(1).withHour(10), "updated_at", null,
-                    "content", "이번 정기 출사는 해운대에서 진행합니다.\n오후 2시까지 이벤트광장 앞으로 와 주세요.\n카메라가 없어도 휴대폰으로 참여할 수 있어요!"),
-            row("id", 2, "title", "신입 부원 환영회 사진 공유", "is_pinned", false, "view_count", 96, "writer_name", "이나경",
-                    "created_at", NOW.minusDays(5).withHour(20), "updated_at", null,
-                    "content", "지난 환영회의 즐거운 순간들을 확인해 보세요. 사진은 단체 채팅방에 올려 두었습니다."),
-            row("id", 3, "title", "2학기 회비 납부 안내", "is_pinned", false, "view_count", 74, "writer_name", "김도윤",
-                    "created_at", NOW.minusDays(13).withHour(9), "updated_at", NOW.minusDays(12),
-                    "content", "2학기 동아리 회비 납부 일정을 안내드립니다.\n금액: 20,000원\n기한: 이번 달 말까지"),
-            row("id", 4, "title", "9월 사진 공모전 결과 발표", "is_pinned", false, "view_count", 157, "writer_name", "이나경",
-                    "created_at", NOW.minusDays(20).withHour(18), "updated_at", null,
-                    "content", "수상하신 모든 분께 축하의 마음을 전합니다. 수상작은 다음 전시회에 함께 걸립니다."));
 
     private static final List<Map<String, Object>> SCHEDULES = List.of(
             sched(1, "가을 출사 — 해운대", 3, 14, 0, "해운대해수욕장 이벤트광장", "부산 해운대구 우동", 35.1587, 129.1604,
@@ -74,21 +64,12 @@ public class DemoServlet extends HttpServlet {
                 int h = NOW.getHour();
                 req.setAttribute("greeting", h < 12 ? "좋은 아침이에요" : h < 18 ? "좋은 오후예요" : "좋은 저녁이에요");
                 req.setAttribute("next", SCHEDULES.get(0));
-                req.setAttribute("recentNotices", NOTICES.subList(0, 3));
+                try {
+                    req.setAttribute("recentNotices", noticeService.recent(3));
+                } catch (SQLException e) {
+                    throw new ServletException(e);
+                }
                 view = "home";
-            }
-            case "/notices" -> {
-                String q = Objects.toString(req.getParameter("q"), "").trim();
-                List<Map<String, Object>> list = NOTICES.stream().filter(n -> ((String) n.get("title")).contains(q)).toList();
-                req.setAttribute("q", q);
-                req.setAttribute("notices", list);
-                req.setAttribute("total", list.size());
-                view = "notice/list";
-            }
-            case "/notices/view" -> {
-                Map<String, Object> n = find(NOTICES, req.getParameter("id"));
-                if (n == null) { deleted(req, "/notices", "공지 목록으로"); view = "message"; }
-                else { req.setAttribute("notice", n); view = "notice/view"; }
             }
             case "/schedules" -> {
                 LocalDate today = NOW.toLocalDate();
@@ -128,8 +109,6 @@ public class DemoServlet extends HttpServlet {
             case "/deleted" -> { deleted(req, "/", null); view = "message"; }
             case "/admin/members" -> { req.setAttribute("members", MEMBERS); view = "admin/members"; }
             case "/admin/club" -> view = "admin/club";
-            case "/admin/notices/write" -> view = "notice/form";
-            case "/admin/notices/edit" -> { req.setAttribute("notice", find(NOTICES, req.getParameter("id"))); view = "notice/form"; }
             case "/admin/schedules/write" -> view = "schedule/form";
             case "/admin/schedules/edit" -> { req.setAttribute("s", find(SCHEDULES, req.getParameter("id"))); view = "schedule/form"; }
             default -> { resp.sendError(HttpServletResponse.SC_NOT_FOUND); return; }
@@ -141,8 +120,7 @@ public class DemoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String path = req.getServletPath() + Objects.toString(req.getPathInfo(), "");
-        String to = path.startsWith("/admin/notices") ? "/notices"
-                : path.startsWith("/admin/schedules") ? "/schedules"
+        String to = path.startsWith("/admin/schedules") ? "/schedules"
                 : null;
         String referer = req.getHeader("Referer");
         resp.sendRedirect(to != null ? req.getContextPath() + to : referer != null ? referer : req.getContextPath() + "/");
