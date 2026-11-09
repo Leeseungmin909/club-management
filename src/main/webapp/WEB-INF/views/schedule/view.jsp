@@ -1,5 +1,6 @@
 <%-- 일정 상세 (SFR-18, 19) + 출석 체크·변경 (SFR-20, 21) + 출석 현황 (SFR-22) + 지도 (SFR-24) --%>
 <c:set var="pageCss" value="schedule" />
+<c:set var="pageJs" value="schedule-map" />
 <c:set var="nav" value="schedules" />
 <c:set var="title" value="일정" />
 <c:set var="back" value="${ctx}/schedules" />
@@ -19,8 +20,8 @@
 
 <c:if test="${not empty s.latitude}">
     <%-- 네이버 지도 (SFR-24, 박계령 담당): 이 div 에 지도와 마커를 그린다. 실패하면 아래 안내 문구가 그대로 남는다 --%>
-    <div class="map" id="map" data-lat="${s.latitude}" data-lng="${s.longitude}">
-        <span><i data-lucide="map"></i><br>네이버 지도 연동 예정<br><span class="small">${fn:escapeXml(s.place_name)}</span></span>
+    <div class="map" id="map" data-key="${fn:escapeXml(Config.get('naver.map.client.id'))}" data-lat="${s.latitude}" data-lng="${s.longitude}">
+        <span><i data-lucide="map"></i><br>지도를 불러오는 중이에요<br><span class="small">${fn:escapeXml(s.place_name)}</span></span>
     </div>
 </c:if>
 
