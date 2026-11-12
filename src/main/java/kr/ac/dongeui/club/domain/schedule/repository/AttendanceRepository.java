@@ -80,15 +80,16 @@ public class AttendanceRepository {
         }
     }
 
-    /** 내 최근 응답 기록. 키: schedule_id, title, start_at, status */
-    public List<Map<String, Object>> myHistory(String studentNo, int limit) throws SQLException {
+    /** 내 최근 출석 기록 (이미 시작한 일정만, 출석률과 같은 기준). 키: schedule_id, title, start_at, status */
+    public List<Map<String, Object>> myHistory(String studentNo, LocalDateTime now, int limit) throws SQLException {
         try (Connection c = Db.get();
              PreparedStatement ps = c.prepareStatement("""
                      SELECT s.id, s.title, s.start_at, a.status FROM attendance a JOIN schedule s ON s.id = a.schedule_id
-                     WHERE a.student_no = ? ORDER BY s.start_at DESC, s.id DESC LIMIT ?
+                     WHERE a.student_no = ? AND s.start_at <= ? ORDER BY s.start_at DESC, s.id DESC LIMIT ?
                      """)) {
             ps.setString(1, studentNo);
-            ps.setInt(2, limit);
+            ps.setObject(2, now);
+            ps.setInt(3, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Map<String, Object>> list = new ArrayList<>();
                 while (rs.next()) {

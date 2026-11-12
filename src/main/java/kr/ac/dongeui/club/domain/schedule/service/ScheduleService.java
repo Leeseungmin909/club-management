@@ -86,9 +86,10 @@ public class ScheduleService {
 
     /** 내 출석률 + 최근 응답 기록 (내 정보 · 홈 화면) */
     public MyAttendance myAttendance(String studentNo) throws SQLException {
-        int[] stats = attendanceRepository.myStats(studentNo, LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        int[] stats = attendanceRepository.myStats(studentNo, now);
         int rate = stats[0] == 0 ? 0 : Math.round(stats[1] * 100f / stats[0]);
-        return new MyAttendance(stats[0], stats[1], rate, attendanceRepository.myHistory(studentNo, 10));
+        return new MyAttendance(stats[0], stats[1], rate, attendanceRepository.myHistory(studentNo, now, 10));
     }
 
     // ---------- 출석 체크 (SFR-20, 21) ----------
