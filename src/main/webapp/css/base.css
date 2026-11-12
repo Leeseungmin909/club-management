@@ -109,6 +109,7 @@ textarea.input { height: auto; min-height: 150px; padding: 12px 14px; resize: ve
 .list > * { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1px solid var(--line); }
 .list > *:first-child { border-top: 0; }
 .list > a:hover { background: var(--soft); }
+.list > .empty { justify-content: center; }
 .list svg.chev { color: #c4c4d0; }
 .title-sm { font-weight: 600; }
 .tile { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); }
