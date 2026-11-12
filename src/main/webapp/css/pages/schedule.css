@@ -33,11 +33,12 @@ a.sched:hover { background: var(--soft); }
 .counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .count { padding: 14px 10px; border: 1px solid var(--line); border-radius: 14px; text-align: center; }
 .count b { display: block; font-size: 20px; }
-.count summary { list-style: none; cursor: pointer; }
-.count summary::-webkit-details-marker { display: none; }
-.count summary small { color: var(--primary); font-size: 11px; }
-.count ul { margin-top: 10px; text-align: left; }
-.count li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; }
+button.count { background: none; font: inherit; color: inherit; cursor: pointer; }
+button.count:hover { background: var(--soft); }
+.count small { color: var(--primary); font-size: 11px; }
+.people { max-height: 60vh; overflow-y: auto; }
+.people li { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; }
+.people li.empty { justify-content: center; }
 
 /* 장소 검색 결과 (SFR-23) */
 .place-results { list-style: none; margin: -2px 0 8px; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: #fff; overflow: hidden; }

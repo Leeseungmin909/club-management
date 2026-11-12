@@ -36,16 +36,20 @@
 <c:if test="${s.started}"><p class="hint" style="margin:-4px 0 12px">일정이 시작되어 참석 여부를 바꿀 수 없어요.</p></c:if>
 
 <div class="counts">
-    <details class="count">
-        <summary><b>${fn:length(attendees)}</b>참석 <small>명단</small></summary>
-        <ul><c:forEach items="${attendees}" var="m"><li><t:avatar name="${m.name}" src="${m.profile_image}" size="sm" />${fn:escapeXml(m.name)}</li></c:forEach></ul>
-    </details>
-    <details class="count">
-        <summary><b>${fn:length(absentees)}</b>불참 <small>명단</small></summary>
-        <ul><c:forEach items="${absentees}" var="m"><li><t:avatar name="${m.name}" src="${m.profile_image}" size="sm" />${fn:escapeXml(m.name)}</li></c:forEach></ul>
-    </details>
+    <button class="count" type="button" data-open="attendDlg"><b>${fn:length(attendees)}</b>참석 <small>명단</small></button>
+    <button class="count" type="button" data-open="absentDlg"><b>${fn:length(absentees)}</b>불참 <small>명단</small></button>
     <div class="count"><b>${noReply}</b>미응답</div>
 </div>
+
+<c:forEach items="${[['attendDlg', '참석', attendees], ['absentDlg', '불참', absentees]]}" var="d">
+    <dialog id="${d[0]}">
+        <div class="dlg-head">${d[1]} ${fn:length(d[2])}명<button class="icon-btn" type="button" data-close aria-label="닫기"><i data-lucide="x"></i></button></div>
+        <ul class="dlg-body people">
+            <c:forEach items="${d[2]}" var="m"><li><t:avatar name="${m.name}" src="${m.profile_image}" size="sm" />${fn:escapeXml(m.name)}</li></c:forEach>
+            <c:if test="${empty d[2]}"><li class="empty">아직 ${d[1]}한 사람이 없어요.</li></c:if>
+        </ul>
+    </dialog>
+</c:forEach>
 
 <c:if test="${me.role == 'ADMIN'}">
     <div class="detail-foot" style="margin-top:20px">
