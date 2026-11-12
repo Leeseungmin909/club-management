@@ -28,6 +28,11 @@ public class MemberService {
         return memberRepository.findByStudentNo(studentNo);
     }
 
+    /** 활동 중인 회원 수 (홈 화면) */
+    public int countActive() throws SQLException {
+        return memberRepository.countActive();
+    }
+
     public List<Member> listPending() throws SQLException {
         return memberRepository.findPending();
     }

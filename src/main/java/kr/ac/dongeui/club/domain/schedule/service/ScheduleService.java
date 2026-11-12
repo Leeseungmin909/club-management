@@ -84,10 +84,6 @@ public class ScheduleService {
         return new Detail(s, attendanceRepository.findStatus(id, studentNo), yes, no, noReply);
     }
 
-    public int memberCount() throws SQLException {
-        return memberRepository.countActive();
-    }
-
     /** 내 출석률 + 최근 응답 기록 (내 정보 · 홈 화면) */
     public MyAttendance myAttendance(String studentNo) throws SQLException {
         int[] stats = attendanceRepository.myStats(studentNo, LocalDateTime.now());
