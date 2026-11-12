@@ -41,7 +41,11 @@ public class ScheduleController extends HttpServlet {
                 showDeleted(req, resp);
                 return;
             }
-            req.getSession().setAttribute("flash", "ATTEND".equals(status) ? "참석으로 응답했어요." : "불참으로 응답했어요.");
+            req.getSession().setAttribute("flash", switch (status) {
+                case "ATTEND" -> "참석으로 응답했어요.";
+                case "ABSENT" -> "불참으로 응답했어요.";
+                default -> "응답을 취소했어요.";
+            });
         } catch (IllegalArgumentException e) {
             req.getSession().setAttribute("flash", e.getMessage());
         } catch (SQLException e) {

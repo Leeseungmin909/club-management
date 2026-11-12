@@ -28,6 +28,16 @@ public class AttendanceRepository {
         }
     }
 
+    /** 응답 취소 (미응답으로 되돌리기) */
+    public void delete(int scheduleId, String studentNo) throws SQLException {
+        try (Connection c = Db.get();
+             PreparedStatement ps = c.prepareStatement("DELETE FROM attendance WHERE schedule_id = ? AND student_no = ?")) {
+            ps.setInt(1, scheduleId);
+            ps.setString(2, studentNo);
+            ps.executeUpdate();
+        }
+    }
+
     /** 내 응답(ATTEND / ABSENT). 아직 안 눌렀으면 null */
     public String findStatus(int scheduleId, String studentNo) throws SQLException {
         try (Connection c = Db.get();

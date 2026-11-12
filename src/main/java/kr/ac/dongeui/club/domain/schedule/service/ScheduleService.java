@@ -94,13 +94,14 @@ public class ScheduleService {
 
     // ---------- 출석 체크 (SFR-20, 21) ----------
 
-    /** 참석 여부 저장 · 변경. 삭제된 일정이면 false, 이미 시작했거나 값이 이상하면 IllegalArgumentException */
+    /** 참석 여부 저장 · 변경, NONE 이면 응답 취소. 삭제된 일정이면 false, 이미 시작했거나 값이 이상하면 IllegalArgumentException */
     public boolean attend(int scheduleId, String studentNo, String status) throws SQLException {
-        if (!"ATTEND".equals(status) && !"ABSENT".equals(status)) throw new IllegalArgumentException("잘못된 요청이에요.");
+        if (!"ATTEND".equals(status) && !"ABSENT".equals(status) && !"NONE".equals(status)) throw new IllegalArgumentException("잘못된 요청이에요.");
         Map<String, Object> s = find(scheduleId);
         if (s == null) return false;
         if ((Boolean) s.get("started")) throw new IllegalArgumentException("일정이 시작되어 참석 여부를 바꿀 수 없어요.");
-        attendanceRepository.save(scheduleId, studentNo, status);
+        if ("NONE".equals(status)) attendanceRepository.delete(scheduleId, studentNo);
+        else attendanceRepository.save(scheduleId, studentNo, status);
         return true;
     }
 

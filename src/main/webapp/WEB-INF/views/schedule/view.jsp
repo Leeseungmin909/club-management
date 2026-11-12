@@ -30,8 +30,9 @@
 <h3 style="font-size:16px;margin-top:8px">참석 여부</h3>
 <form class="rsvp" method="post" action="${ctx}/schedules/attend" data-ga="attendance_check">
     <input type="hidden" name="scheduleId" value="${s.id}">
-    <button class="yes ${myStatus == 'ATTEND' ? 'on' : ''}" name="status" value="ATTEND" ${s.started ? 'disabled' : ''}>참석할게요</button>
-    <button class="no ${myStatus == 'ABSENT' ? 'on' : ''}" name="status" value="ABSENT" ${s.started ? 'disabled' : ''}>참석이 어려워요</button>
+    <%-- 이미 고른 버튼을 다시 누르면 NONE(응답 취소) --%>
+    <button class="yes ${myStatus == 'ATTEND' ? 'on' : ''}" name="status" value="${myStatus == 'ATTEND' ? 'NONE' : 'ATTEND'}" ${s.started ? 'disabled' : ''}>참석할게요</button>
+    <button class="no ${myStatus == 'ABSENT' ? 'on' : ''}" name="status" value="${myStatus == 'ABSENT' ? 'NONE' : 'ABSENT'}" ${s.started ? 'disabled' : ''}>참석이 어려워요</button>
 </form>
 <c:if test="${s.started}"><p class="hint" style="margin:-4px 0 12px">일정이 시작되어 참석 여부를 바꿀 수 없어요.</p></c:if>
 
