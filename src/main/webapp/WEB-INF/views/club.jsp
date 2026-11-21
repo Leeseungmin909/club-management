@@ -5,7 +5,10 @@
 <%@ include file="/WEB-INF/views/layout/top.jspf" %>
 
 <div class="club-cover">
-    <c:if test="${not empty club.bannerPath}"><img src="${fn:escapeXml(club.bannerPath)}" alt=""></c:if>
+    <c:if test="${not empty club.bannerPath}">
+        <img class="fill" src="${fn:escapeXml(club.bannerPath)}" alt="">
+        <img class="main" src="${fn:escapeXml(club.bannerPath)}" alt="">
+    </c:if>
     <div class="club-head">
         <t:avatar name="${club.name}" src="${club.imagePath}" size="xl" />
         <div>
