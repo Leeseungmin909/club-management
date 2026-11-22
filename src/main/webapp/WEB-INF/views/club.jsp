@@ -4,17 +4,14 @@
 <c:set var="panelClass" value="narrow" />
 <%@ include file="/WEB-INF/views/layout/top.jspf" %>
 
-<div class="club-cover">
-    <c:if test="${not empty club.bannerPath}">
-        <img class="fill" src="${fn:escapeXml(club.bannerPath)}" alt="">
-        <img class="main" src="${fn:escapeXml(club.bannerPath)}" alt="">
-    </c:if>
-    <div class="club-head">
-        <t:avatar name="${club.name}" src="${club.imagePath}" size="xl" />
-        <div>
-            <h2>${fn:escapeXml(club.name)}</h2>
-            <p class="row"><i data-lucide="school"></i>${fn:escapeXml(club.school)}</p>
-        </div>
+<div class="club-banner">
+    <c:if test="${not empty club.bannerPath}"><img src="${fn:escapeXml(club.bannerPath)}" alt=""></c:if>
+</div>
+<div class="club-head">
+    <t:avatar name="${club.name}" src="${club.imagePath}" size="xl" />
+    <div>
+        <h2>${fn:escapeXml(club.name)}</h2>
+        <p class="row"><i data-lucide="school"></i>${fn:escapeXml(club.school)}</p>
     </div>
 </div>
 
