@@ -1,0 +1,19 @@
+/* 공지: 목록 카드 · AI 다듬기 */
+.card {
+  display: block; margin-bottom: 10px; padding: 16px 18px;
+  border: 1px solid var(--line); border-radius: var(--radius); background: #fff;
+}
+a.card:hover { border-color: #d9d0fb; }
+.card.pinned { background: linear-gradient(135deg, #f6f3ff, #fff 70%); border-color: #e3dcfd; }
+.card h4 { margin: 6px 0 4px; font-size: 15px; }
+.card p { font-size: 13px; color: var(--text-2); }
+.card .views { display: flex; align-items: center; gap: 4px; margin-top: 10px; font-size: 11px; color: var(--muted); }
+.card .views svg.lucide { width: 13px; height: 13px; }
+
+.ai-btn {
+  display: flex; align-items: center; gap: 8px; width: 100%; margin-bottom: 16px; padding: 14px 16px;
+  border: 1px solid #e3dcfd; border-radius: 14px; background: linear-gradient(90deg, #f6f3ff, #fbfaff);
+  color: var(--primary); font-weight: 600; cursor: pointer;
+}
+.ai-btn small { margin-left: auto; font-size: 11px; font-weight: 400; color: var(--muted); }
+.ai-btn:disabled { opacity: .6; cursor: progress; }

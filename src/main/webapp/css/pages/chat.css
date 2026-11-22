@@ -1,0 +1,50 @@
+/* 단체 채팅 */
+.panel.chat { height: calc(100vh - 68px); }
+.panel.chat .panel-body { display: flex; flex-direction: column; min-height: 0; padding: 0; }
+.chat-log { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding: 20px; background: #f6f6fa; }
+.day-sep { align-self: center; padding: 3px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-size: 11px; color: var(--muted); }
+.msg { display: flex; align-items: flex-start; gap: 8px; max-width: min(82%, 560px); }
+.msg .who { margin-bottom: 4px; font-size: 12px; font-weight: 600; }
+.msg-row { display: flex; align-items: flex-end; gap: 6px; }
+.msg time { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.bubble { padding: 10px 14px; border-radius: 4px 16px 16px 16px; background: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, .03); white-space: pre-wrap; word-break: break-word; }
+.msg.mine { align-self: flex-end; }
+.msg.mine .msg-row { flex-direction: row-reverse; }
+.msg.mine .bubble { border-radius: 16px 4px 16px 16px; background: var(--primary); color: #fff; }
+.bubble.media { padding: 4px; background: #fff !important; }
+.bubble.media img, .bubble.media video { width: 240px; max-width: 60vw; height: auto; max-height: 320px; object-fit: cover; border-radius: 12px; }
+.chat-input { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); background: #fff; }
+.chat-input input[type=text] { flex: 1; min-width: 0; height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 22px; background: #f6f6fa; }
+.chat-input input[type=text]:focus { outline: 3px solid var(--primary-100); border-color: var(--primary); }
+.round { display: grid; place-items: center; width: 42px; height: 42px; flex: none; border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--text-2); cursor: pointer; }
+.round.send { border: 0; background: var(--primary); color: #fff; }
+.round.send:disabled { background: #e3e1ea; }
+.head-count { font-size: 12px; color: var(--muted); }
+
+/* 시간 · 수정 · 삭제 */
+.msg-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.msg.mine .msg-meta { align-items: flex-end; }
+.msg-actions { display: flex; gap: 2px; }
+.msg-action { display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; }
+.msg-action:hover { background: #ebe9f2; color: var(--text); }
+.msg-action svg.lucide { width: 13px; height: 13px; }
+@media (hover: hover) {  /* 마우스가 있으면 올렸을 때만, 터치 화면은 항상 보인다 */
+  .msg-actions { visibility: hidden; }
+  .msg:hover .msg-actions, .msg-actions:focus-within { visibility: visible; }
+}
+
+/* 보내기 전 미리보기 */
+#fileDlg { width: min(440px, calc(100% - 32px)); }
+.file-preview { display: grid; place-items: center; min-height: 160px; margin-bottom: 10px; overflow: hidden; border-radius: 14px; background: #1c1c24; }
+.file-preview img, .file-preview video { width: 100%; max-height: 360px; object-fit: contain; }
+
+/* 파일 업로드 진행률 */
+.upload-progress { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 10px 16px; border-top: 1px solid var(--line); background: #fff; font-size: 12px; color: var(--text-2); }
+.upload-progress span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.upload-progress b { color: var(--primary); }
+.upload-progress .bar { grid-column: 1 / -1; height: 6px; margin: 0; background: var(--primary-50); }
+.upload-progress .bar i { width: 0; transition: width .2s; }
+
+@media (max-width: 860px) {
+  .panel.chat { height: 100vh; height: 100dvh; }
+}
