@@ -30,10 +30,9 @@
 | **Language** | ![Java](https://img.shields.io/badge/Java-21-007396?style=flat&logo=openjdk&logoColor=white) |
 | **Backend** | ![Jakarta EE](https://img.shields.io/badge/Jakarta_Servlet-6.0-F8981D?style=flat&logo=jakartaee&logoColor=white) ![JSP](https://img.shields.io/badge/JSP_·_JSTL-3.0-007396?style=flat) ![Tomcat](https://img.shields.io/badge/Apache_Tomcat-10.1-F8DC75?style=flat&logo=apachetomcat&logoColor=black) ![Gson](https://img.shields.io/badge/Gson-2.11-4285F4?style=flat&logo=google&logoColor=white) |
 | **Frontend** | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?style=flat&logo=chartdotjs&logoColor=white) ![Lucide](https://img.shields.io/badge/Lucide-Icons-F56565?style=flat) |
-| **Database** | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white) |
+| **Database** | ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat&logo=mariadb&logoColor=white) |
 | **External API** | ![Naver](https://img.shields.io/badge/네이버_로그인-03C75A?style=flat&logo=naver&logoColor=white) ![Kakao](https://img.shields.io/badge/카카오_로그인-FFCD00?style=flat&logo=kakao&logoColor=black) ![NCP Maps](https://img.shields.io/badge/NCP_Maps_·_API_HUB-03C75A?style=flat&logo=naver&logoColor=white) ![Gemini](https://img.shields.io/badge/Google_Gemini-8E75B2?style=flat&logo=googlegemini&logoColor=white) ![GA4](https://img.shields.io/badge/Google_Analytics_4-E37400?style=flat&logo=googleanalytics&logoColor=white) |
-| **Infra** | ![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900?style=flat&logo=amazonec2&logoColor=white) ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white) |
-| **Tools** | ![IntelliJ](https://img.shields.io/badge/IntelliJ_IDEA-000000?style=flat&logo=intellij-idea&logoColor=white) ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=flat&logo=figma&logoColor=white) ![dbdiagram](https://img.shields.io/badge/dbdiagram.io-ERD-2F80ED?style=flat) ![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white) |
+| **Infra** | ![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900?style=flat&logo=amazonec2&logoColor=white) ![Rocky Linux](https://img.shields.io/badge/Rocky_Linux-10B981?style=flat&logo=rockylinux&logoColor=white) || **Tools** | ![IntelliJ](https://img.shields.io/badge/IntelliJ_IDEA-000000?style=flat&logo=intellij-idea&logoColor=white) ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=flat&logo=figma&logoColor=white) ![dbdiagram](https://img.shields.io/badge/dbdiagram.io-ERD-2F80ED?style=flat) ![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white) |
 
 <br/>
 
@@ -201,10 +200,13 @@ mysql -u root -p clubapp < db/demo-data.sql   # (선택) 시연용 더미 데이
 gradlew.bat war
 
 # macOS / Linux
-./gradlew war
+bash gradlew war
 ```
 > `build/libs/ROOT.war` 를 `{Tomcat}/webapps/` 에 복사한 뒤 Tomcat 을 실행합니다. 접속 확인: http://localhost:8080
 
-(배포: EC2 배포 방법 작성 예정)
+### 6. 배포 (AWS EC2)
+* **서버:** EC2 t3.small · Rocky Linux 9, 탄력적 IP, 보안 그룹에서 8080 포트 허용
+* **구성:** JDK 21 · Tomcat 10.1 · MariaDB 설치 후 위 2~5 단계와 동일하게 설정 (Tomcat 은 systemd 서비스로 등록해 재부팅 시 자동 실행)
+* **외부 API:** 네이버 · 카카오 로그인 Callback URL, NCP Maps Web 서비스 URL 에 `http://<탄력적 IP>:8080` 추가 등록
 
 <br/>
