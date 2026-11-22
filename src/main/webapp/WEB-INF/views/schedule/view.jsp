@@ -1,5 +1,6 @@
 <%-- 일정 상세 (SFR-18, 19) + 출석 체크·변경 (SFR-20, 21) + 출석 현황 (SFR-22) + 지도 (SFR-24) --%>
 <c:set var="pageCss" value="schedule" />
+<c:set var="pageJs" value="schedule-map" />
 <c:set var="nav" value="schedules" />
 <c:set var="title" value="일정" />
 <c:set var="back" value="${ctx}/schedules" />
@@ -19,8 +20,8 @@
 
 <c:if test="${not empty s.latitude}">
     <%-- 네이버 지도 (SFR-24, 박계령 담당): 이 div 에 지도와 마커를 그린다. 실패하면 아래 안내 문구가 그대로 남는다 --%>
-    <div class="map" id="map" data-lat="${s.latitude}" data-lng="${s.longitude}">
-        <span><i data-lucide="map"></i><br>네이버 지도 연동 예정<br><span class="small">${fn:escapeXml(s.place_name)}</span></span>
+    <div class="map" id="map" data-key="${fn:escapeXml(Config.get('naver.map.client.id'))}" data-lat="${s.latitude}" data-lng="${s.longitude}">
+        <span><i data-lucide="map"></i><br>지도를 불러오는 중이에요<br><span class="small">${fn:escapeXml(s.place_name)}</span></span>
     </div>
 </c:if>
 
@@ -29,22 +30,27 @@
 <h3 style="font-size:16px;margin-top:8px">참석 여부</h3>
 <form class="rsvp" method="post" action="${ctx}/schedules/attend" data-ga="attendance_check">
     <input type="hidden" name="scheduleId" value="${s.id}">
-    <button class="yes ${myStatus == 'ATTEND' ? 'on' : ''}" name="status" value="ATTEND" ${s.started ? 'disabled' : ''}>참석할게요</button>
-    <button class="no ${myStatus == 'ABSENT' ? 'on' : ''}" name="status" value="ABSENT" ${s.started ? 'disabled' : ''}>참석이 어려워요</button>
+    <%-- 이미 고른 버튼을 다시 누르면 NONE(응답 취소) --%>
+    <button class="yes ${myStatus == 'ATTEND' ? 'on' : ''}" name="status" value="${myStatus == 'ATTEND' ? 'NONE' : 'ATTEND'}" ${s.started ? 'disabled' : ''}>참석할게요</button>
+    <button class="no ${myStatus == 'ABSENT' ? 'on' : ''}" name="status" value="${myStatus == 'ABSENT' ? 'NONE' : 'ABSENT'}" ${s.started ? 'disabled' : ''}>참석이 어려워요</button>
 </form>
 <c:if test="${s.started}"><p class="hint" style="margin:-4px 0 12px">일정이 시작되어 참석 여부를 바꿀 수 없어요.</p></c:if>
 
 <div class="counts">
-    <details class="count">
-        <summary><b>${fn:length(attendees)}</b>참석 <small>명단</small></summary>
-        <ul><c:forEach items="${attendees}" var="m"><li><t:avatar name="${m.name}" src="${m.profile_image}" size="sm" />${fn:escapeXml(m.name)}</li></c:forEach></ul>
-    </details>
-    <details class="count">
-        <summary><b>${fn:length(absentees)}</b>불참 <small>명단</small></summary>
-        <ul><c:forEach items="${absentees}" var="m"><li><t:avatar name="${m.name}" src="${m.profile_image}" size="sm" />${fn:escapeXml(m.name)}</li></c:forEach></ul>
-    </details>
+    <button class="count" type="button" data-open="attendDlg"><b>${fn:length(attendees)}</b>참석 <small>명단</small></button>
+    <button class="count" type="button" data-open="absentDlg"><b>${fn:length(absentees)}</b>불참 <small>명단</small></button>
     <div class="count"><b>${noReply}</b>미응답</div>
 </div>
+
+<c:forEach items="${[['attendDlg', '참석', attendees], ['absentDlg', '불참', absentees]]}" var="d">
+    <dialog id="${d[0]}">
+        <div class="dlg-head">${d[1]} ${fn:length(d[2])}명<button class="icon-btn" type="button" data-close aria-label="닫기"><i data-lucide="x"></i></button></div>
+        <ul class="dlg-body people">
+            <c:forEach items="${d[2]}" var="m"><li><t:avatar name="${m.name}" src="${m.profile_image}" size="sm" />${fn:escapeXml(m.name)}</li></c:forEach>
+            <c:if test="${empty d[2]}"><li class="empty">아직 ${d[1]}한 사람이 없어요.</li></c:if>
+        </ul>
+    </dialog>
+</c:forEach>
 
 <c:if test="${me.role == 'ADMIN'}">
     <div class="detail-foot" style="margin-top:20px">

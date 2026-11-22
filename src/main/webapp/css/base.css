@@ -109,6 +109,7 @@ textarea.input { height: auto; min-height: 150px; padding: 12px 14px; resize: ve
 .list > * { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1px solid var(--line); }
 .list > *:first-child { border-top: 0; }
 .list > a:hover { background: var(--soft); }
+.list > .empty { justify-content: center; }
 .list svg.chev { color: #c4c4d0; }
 .title-sm { font-weight: 600; }
 .tile { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); }
@@ -144,11 +145,12 @@ dialog::backdrop { background: rgba(20, 15, 40, .4); }
 .dlg-body { padding: 20px; }
 .dlg-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 0 20px 20px; }
 .drop {
-  display: grid; place-items: center; width: 140px; height: 140px; margin: 0 auto 16px; overflow: hidden;
+  display: grid; grid-template: 100% / 100%; place-items: center; width: 140px; height: 140px; margin: 0 auto 16px; overflow: hidden;
   border: 2px dashed var(--line); border-radius: 50%; background: var(--soft); color: var(--muted); font-size: 12px; text-align: center;
 }
 .drop.square { width: 100%; height: 160px; border-radius: var(--radius); }
 .drop img { width: 100%; height: 100%; object-fit: cover; }
+.drop.square img { object-fit: contain; }  /* 배경 이미지는 잘리지 않게 전체를 보여 준다 (동아리 소개 배너와 동일) */
 .file-btn { display: flex; align-items: center; justify-content: center; gap: 6px; height: 46px; border: 1px solid var(--line); border-radius: 12px; color: var(--primary); font-weight: 600; cursor: pointer; }
 .file-btn input { display: none; }
 

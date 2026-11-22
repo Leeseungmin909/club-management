@@ -40,7 +40,7 @@
             <span class="badge ${h.status == 'ATTEND' ? 'green' : 'red'}">${h.status == 'ATTEND' ? '참석' : '불참'}</span>
         </a>
     </c:forEach>
-    <c:if test="${empty history}"><p class="empty">아직 응답한 일정이 없어요.</p></c:if>
+    <c:if test="${empty history}"><p class="empty">아직 출석 기록이 없어요.</p></c:if>
 </div>
 
 <form method="post" action="${ctx}/me/withdraw" style="margin-top:28px;text-align:center"
